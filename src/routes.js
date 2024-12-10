@@ -43,6 +43,7 @@ import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
+import SignOut from "layouts/authentication/sign-out";
 import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
@@ -118,7 +119,7 @@ const routes = [
     key: "sign-out",
     icon: <Icon fontSize="small">login</Icon>,
     route: "/authentication/sign-out",
-    component: <SignIn />,
+    component: <SignOut />,
     visibility: "signedIn",
   },
   {

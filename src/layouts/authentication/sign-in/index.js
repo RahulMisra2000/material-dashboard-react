@@ -67,7 +67,7 @@ function Basic() {
 
       if (!docSnap.exists() || !docSnap.data()?.allowed) {
         console.error("User is not allowed:", loggedInUser.email);
-        auth.signOut(); // Sign out the unauthorized user
+        await auth.signOut(); // Sign out the unauthorized user
 
         //navigate("/login", { state: { error: "You are not authorized to access this application." } });
         // OR
