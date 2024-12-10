@@ -12,12 +12,15 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import { Navigate } from "react-router-dom";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+
+import { useUser } from "../../context/UserContext"; // Import the custom hook to access user context
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -35,8 +38,36 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
+import SignIn from "layouts/authentication/sign-in";
+
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+
+  const { user, loading, error } = useUser();
+
+  // If the data is still loading, you might want to show a loading spinner or message
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // If there's an error, handle it (optional, for example show an error message)
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  // If no user then
+  if (!user) {
+    return (
+      <>
+        {/*
+        <DashboardLayout>
+          <h1>NO USER: {user}</h1>
+        </DashboardLayout>
+        */}
+        <SignIn />
+      </>
+    );
+  }
 
   return (
     <DashboardLayout>

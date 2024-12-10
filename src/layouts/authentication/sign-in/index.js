@@ -14,6 +14,10 @@ Coded by www.creative-tim.com
 */
 
 import { useState } from "react";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../../../firebase/config";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -43,8 +47,41 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
-
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  const db = getFirestore();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Google Sign-In
+  const handleGoogleClick = async (event) => {
+    // Prevent the default behavior of the link
+    event.preventDefault();
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const loggedInUser = result.user;
+
+      // Check if the email is allowed
+      const docRef = doc(db, "allowedUsers", loggedInUser.email);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists() || !docSnap.data().allowed) {
+        console.error("User is not allowed:", loggedInUser.email);
+        auth.signOut(); // Sign out the unauthorized user
+
+        //navigate("/login", { state: { error: "You are not authorized to access this application." } });
+        // OR
+        navigate("/unauthorized", { replace: true });
+      } else {
+        console.log("User is allowed:", loggedInUser.email);
+        navigate("/dashboard"); // Redirect to the dashboard
+      }
+
+      // alert('Logged in successfully with Google!');
+    } catch (error) {
+      console.error("Error logging in:", error.message);
+    }
+  };
 
   return (
     <BasicLayout image={bgImage}>
@@ -75,7 +112,13 @@ function Basic() {
               </MDTypography>
             </Grid>
             <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
+              <MDTypography
+                component={MuiLink}
+                onClick={handleGoogleClick}
+                href="#"
+                variant="body1"
+                color="white"
+              >
                 <GoogleIcon color="inherit" />
               </MDTypography>
             </Grid>
