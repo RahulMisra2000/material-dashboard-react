@@ -60,18 +60,19 @@ function Basic() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const loggedInUser = result.user;
+      console.log({ loggedInUser });
 
       // Check if the email is allowed
       const docRef = doc(db, "allowedUsers", loggedInUser.email);
       const docSnap = await getDoc(docRef);
 
-      if (!docSnap.exists() || !docSnap.data().allowed) {
+      if (!docSnap.exists() || !docSnap.data()?.allowed) {
         console.error("User is not allowed:", loggedInUser.email);
         auth.signOut(); // Sign out the unauthorized user
 
         //navigate("/login", { state: { error: "You are not authorized to access this application." } });
         // OR
-        navigate("/unauthorized", { replace: true });
+        navigate("/", { replace: true });
       } else {
         console.log("User is allowed:", loggedInUser.email);
         navigate("/dashboard"); // Redirect to the dashboard
@@ -79,7 +80,7 @@ function Basic() {
 
       // alert('Logged in successfully with Google!');
     } catch (error) {
-      console.error("Error logging in:", error.message);
+      console.log("Error logging in:", error.message);
     }
   };
 
