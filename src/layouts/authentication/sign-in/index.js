@@ -50,7 +50,6 @@ function Basic() {
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const db = getFirestore();
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Google Sign-In
   const handleGoogleClick = async (event) => {

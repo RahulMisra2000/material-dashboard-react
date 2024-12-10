@@ -56,6 +56,7 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,
+    visibility: "signedIn", // This route is available to only signed in users
   },
   {
     type: "collapse",
@@ -64,6 +65,7 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/tables",
     component: <Tables />,
+    visibility: "always", // This route is available to all users
   },
   {
     type: "collapse",
@@ -72,6 +74,7 @@ const routes = [
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/billing",
     component: <Billing />,
+    visibility: "never", // This route has been deactivated
   },
   {
     type: "collapse",
@@ -80,6 +83,7 @@ const routes = [
     icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
     route: "/rtl",
     component: <RTL />,
+    visibility: "always",
   },
   {
     type: "collapse",
@@ -88,6 +92,7 @@ const routes = [
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
     component: <Notifications />,
+    visibility: "always",
   },
   {
     type: "collapse",
@@ -96,6 +101,7 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
     component: <Profile />,
+    visibility: "always",
   },
   {
     type: "collapse",
@@ -104,6 +110,16 @@ const routes = [
     icon: <Icon fontSize="small">login</Icon>,
     route: "/authentication/sign-in",
     component: <SignIn />,
+    visibility: "signedOut",
+  },
+  {
+    type: "collapse",
+    name: "Sign Out",
+    key: "sign-out",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/authentication/sign-out",
+    component: <SignIn />,
+    visibility: "signedIn",
   },
   {
     type: "collapse",
@@ -112,6 +128,7 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+    visibility: "signedOut",
   },
 ];
 
