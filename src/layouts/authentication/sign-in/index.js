@@ -74,7 +74,7 @@ function Basic() {
         navigate("/", { replace: true });
       } else {
         console.log("User is allowed:", loggedInUser.email);
-        navigate("/dashboard"); // Redirect to the dashboard
+        navigate("/welcome"); // Redirect to the dashboard
       }
 
       // alert('Logged in successfully with Google!');
