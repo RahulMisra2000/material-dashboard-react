@@ -55,7 +55,13 @@ import brandDark from "assets/images/logo-ct-dark.png";
 
 import Welcome from "./layouts/welcome";
 
+import useAppLogger from "../src/hooks/useAppLogger";
+import { addRequest } from "../src/services/requestsService";
+
 export default function App() {
+  useAppLogger();
+  addRequest({ requestType: "Simple", msg: "Test Message" });
+
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
