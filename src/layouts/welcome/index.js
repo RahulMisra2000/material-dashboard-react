@@ -41,7 +41,7 @@ function Overview() {
           <MDTypography variant="h2" fontWeight="medium" gutterBottom>
             Welcome to ClearInsight Solutions
           </MDTypography>
-          <MDTypography variant="body1" color="red">
+          <MDTypography variant="body1" color="error">
             {message}
           </MDTypography>
           <MDTypography variant="body1" color="secondary">

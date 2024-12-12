@@ -82,7 +82,7 @@ function Overview() {
       localError = `User credentials not available yet - Cannot send request to Firestore`;
     }
 
-    if (!requestType) {
+    if (!requestType || requestType !== `master-request`) {
       console.log(`Invalid Request Type ${requestType} - Cannot send request to Firestore`);
       localError += `\nInvalid Request Type ${requestType} - Cannot send request to Firestore`;
     }
@@ -126,9 +126,11 @@ function Overview() {
       // ************************************************* WORK ********************************************************
 
       // Since the Firestore record has been written let's go back to the home component with a message
+      /*
       navigate("/welcome", {
         state: { message: `Request delivered to Firestore` },
       });
+      */
     } // if (!localError)
 
     /* *************************************************** THIS RETURN IS DIFFERENT. It is the cleanup function of useEffect *********************************************** */
@@ -144,29 +146,24 @@ function Overview() {
       <MDBox mb={2} />
       <Header>
         <MDBox mt={5} mb={3}>
-          <MDTypography variant="h2" fontWeight="medium" gutterBottom>
-            Outgoing Request
+          <MDTypography variant="h4" fontWeight="medium" gutterBottom>
+            OUTGOING REQUEST STATUS
           </MDTypography>
-          <MDTypography variant="h2" fontWeight="medium" gutterBottom>
-            <div style={{ position: "relative" }}>
-              <div>
-                <h4>Need user/request type/provider(s)</h4>
-                {errorMessage && (
-                  <h3 style={{ color: "red" }}>
-                    {errorMessage.split("\n").map((line, index) => (
-                      <p key={index}>{line}</p>
-                    ))}
-                  </h3>
-                )}
-                {!errorMessage && (
-                  <h4>
-                    Sending request from: {user?.email} of type: {requestType} for provider:{" "}
-                    {providers?.join(",")}
-                  </h4>
-                )}
-              </div>
-            </div>
-          </MDTypography>
+
+          {errorMessage && (
+            <MDTypography variant="h6" fontWeight="light" color="error" mt={1}>
+              {errorMessage.split("\n").map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+            </MDTypography>
+          )}
+
+          {!errorMessage && (
+            <MDTypography variant="h6" fontWeight="light" color="success" mt={1}>
+              Sending request from: {user?.email} of type: {requestType} for provider:{" "}
+              {providers?.join(",")}
+            </MDTypography>
+          )}
         </MDBox>
       </Header>
       <Footer />

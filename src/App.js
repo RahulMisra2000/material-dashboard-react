@@ -202,6 +202,7 @@ export default function App() {
         {getRoutes(routes)}
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/send-request/:requestType" element={<SendRequest />} />
+        <Route path="/send-request" element={<SendRequest />} />
         <Route path="*" element={<Navigate to="/welcome" />} />
         {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
       </Routes>
