@@ -200,6 +200,8 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
+
+        {/* These routes are not soft-coded in routes.js because I don't want them to appear in the SideNav */}
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/send-request/:requestType" element={<SendRequest />} />
         <Route path="/send-request" element={<SendRequest />} />
