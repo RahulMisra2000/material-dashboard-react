@@ -60,8 +60,7 @@ import useAppLogger from "../src/hooks/useAppLogger";
 import { addRequest } from "../src/services/requestsService";
 
 export default function App() {
-  useAppLogger();
-  addRequest({ requestType: "Simple", msg: "Test Message" });
+  console.count(`<App> Rendered`);
 
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -106,6 +105,15 @@ export default function App() {
 
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+
+  useEffect(() => {
+    console.log(`*** App Mounted`);
+    addRequest({ requestType: "Simple", msg: "Test Message" });
+
+    return () => {
+      console.log("App Unmounted");
+    };
+  }, []);
 
   // Setting the dir attribute for the body element
   useEffect(() => {

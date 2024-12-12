@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+// import { connectFirestoreEmulator } from "firebase/firestore";
 
 // Your Firebase config from the Firebase console
 const firebaseConfig = {
@@ -17,7 +18,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-//  ************************************************************* EXPORTS auth, googleProvider and db
+//  ********** If you want to use the LOCAL firestore emulator and not the one by Google in the cloud then uncomment the next line ***************** */
+//  ********** Make sure you run the emulator before running the react app. How to do it is in package.json **************************************** */
+//  ********** The emulator UI is at http://localhost:4000 ***************************************************************************************** */
+// connectFirestoreEmulator(db, "localhost", 8080);
+
+// If you are using the service account on a node server app then you will need to do this process.env.FIRESTORE_EMULATOR_HOST = 'localhost:8080';
+
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export { db };

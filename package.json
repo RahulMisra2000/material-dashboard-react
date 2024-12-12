@@ -45,7 +45,15 @@
     "serve": "serve -s build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
+    
+    "//DIDNTWORK": "XXXXXXXXXXXXXXXXXX - Couldn't get the stuff below to work ---- the app to start with the emulator",
+    "//initEmulator": "Do this 1-time to pick and initialize the firestore emulator",
+    "initEmulator": "firebase init emulators",
+    "//startEmulator": "To start the emulators you had initialized - It is available at http://localhost:4000",
+    "startEmulator": "firebase emulators:start",
+    "//stopEmulator": "To stop the emulators you had started and available at http://localhost:4000",
+    "stopEmulator": "firebase emulators:stop"
   },
   "eslintConfig": {
     "extends": [
