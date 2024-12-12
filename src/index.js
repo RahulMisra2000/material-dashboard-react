@@ -18,11 +18,12 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "App";
 
-// *** PROVIDERS ***
-import { UserProvider } from "./context/UserContext";
-
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";
+
+// *** MY PROVIDERS ***
+import { UserProvider } from "./context/UserContext";
+import { FirestoreProvider } from "../src/context/FirestoreContext";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
@@ -30,9 +31,11 @@ const root = createRoot(container);
 root.render(
   <BrowserRouter>
     <UserProvider>
-      <MaterialUIControllerProvider>
-        <App />
-      </MaterialUIControllerProvider>
+      <FirestoreProvider>
+        <MaterialUIControllerProvider>
+          <App />
+        </MaterialUIControllerProvider>
+      </FirestoreProvider>
     </UserProvider>
   </BrowserRouter>
 );

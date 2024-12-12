@@ -1,0 +1,30 @@
+/* Define the animation using @keyframes */
+@keyframes flyEnvelope {
+      0% {
+        transform: translateX(-50%); /* Start at the left of the screen (out of view) */
+      }
+      100% {
+        transform: translateX(150vw); /* Move to the right, 150% of the viewport width */
+      }
+    }
+    
+    /* Style for the envelope animation container */
+    .envelope-container {
+      position: fixed;  /* Keep it fixed in the viewport */
+      top: 50%;         /* Center it vertically */
+      left: 0;          /* Start at the left of the viewport */
+      z-index: 10;      /* Make sure it's above other content */
+      display: flex;    /* Center the image inside the container */
+      justify-content: center;
+      align-items: center;  /* Vertically align the envelope image */
+      width: 80px;      /* Adjust the width of the envelope */
+      height: auto;
+      animation: flyEnvelope 5s ease-in-out forwards; /* Longer duration for the animation */
+    }
+    
+    /* Style the envelope image */
+    .envelope-image {
+      width: 120px;      /* Set the width of the image */
+      height: auto;     /* Maintain aspect ratio */
+    }
+    
