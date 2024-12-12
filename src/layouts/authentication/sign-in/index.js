@@ -47,6 +47,7 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
+  const [signInError, setSignInError] = useState("");
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const db = getFirestore();
   const navigate = useNavigate();
@@ -68,13 +69,12 @@ function Basic() {
       if (!docSnap.exists() || !docSnap.data()?.allowed) {
         console.error("User is not allowed:", loggedInUser.email);
         await auth.signOut(); // Sign out the unauthorized user
-
+        setSignInError(`${loggedInUser.email} is not authorized`);
         //navigate("/login", { state: { error: "You are not authorized to access this application." } });
         // OR
-        navigate("/", { replace: true });
       } else {
-        console.log("User is allowed:", loggedInUser.email);
-        navigate("/welcome"); // Redirect to the dashboard
+        console.log(`User is allowed:`, loggedInUser.email);
+        navigate("/");
       }
 
       // alert('Logged in successfully with Google!');
@@ -163,6 +163,11 @@ function Basic() {
                   Sign up
                 </MDTypography>
               </MDTypography>
+              {signInError && (
+                <MDTypography variant="h6" fontWeight="medium" color="error" mt={1}>
+                  {signInError}
+                </MDTypography>
+              )}
             </MDBox>
           </MDBox>
         </MDBox>

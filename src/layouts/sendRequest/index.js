@@ -126,10 +126,9 @@ function Overview() {
       // ************************************************* WORK ********************************************************
 
       // Since the Firestore record has been written let's go back to the home component with a message
-      false &&
-        navigate("/welcome", {
-          state: { message: `Request delivered to Firestore` },
-        });
+      navigate("/welcome", {
+        state: { message: `Request delivered to Firestore` },
+      });
     } // if (!localError)
 
     /* *************************************************** THIS RETURN IS DIFFERENT. It is the cleanup function of useEffect *********************************************** */

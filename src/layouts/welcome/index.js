@@ -13,6 +13,9 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
+import React from "react";
+import { useLocation } from "react-router-dom";
+
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -26,6 +29,9 @@ import Footer from "examples/Footer";
 import Header from "layouts/welcome/components/Header";
 
 function Overview() {
+  const location = useLocation();
+  const message = location.state?.message || "";
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -35,13 +41,8 @@ function Overview() {
           <MDTypography variant="h2" fontWeight="medium" gutterBottom>
             Welcome to ClearInsight Solutions
           </MDTypography>
-          <MDTypography variant="body1" color="secondary">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-            dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-            mollit anim id est laborum.
+          <MDTypography variant="body1" color="red">
+            {message}
           </MDTypography>
           <MDTypography variant="body1" color="secondary">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
