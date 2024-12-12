@@ -125,7 +125,7 @@ function Overview() {
 
       // ************************************************* WORK ********************************************************
 
-      // Since the Firestore record has been written let's go back to the home component with a message
+      // Uncomment this if you want to redirect to / and not stay on this component
       /*
       navigate("/welcome", {
         state: { message: `Request delivered to Firestore` },
