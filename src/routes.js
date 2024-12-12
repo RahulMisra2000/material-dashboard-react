@@ -84,7 +84,7 @@ const routes = [
     icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
     route: "/rtl",
     component: <RTL />,
-    visibility: "always",
+    visibility: "never",
   },
   {
     type: "collapse",

@@ -42,7 +42,7 @@ export const FirestoreProvider = ({ children }) => {
     }
 
     try {
-      const docRef = await addDoc(collection(db, "Karen Requests"), {
+      const docRef = await addDoc(collection(db, "KarenRequests"), {
         requestorName: user?.displayName || `Invalid`,
         requestorUid: user?.uid || `Invalid`,
         requestorEmail: user?.email || `Invalid`,

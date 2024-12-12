@@ -74,7 +74,7 @@ function Basic() {
         // OR
       } else {
         console.log(`User is allowed:`, loggedInUser.email);
-        navigate("/");
+        navigate("/", { replace: true });
       }
 
       // alert('Logged in successfully with Google!');
