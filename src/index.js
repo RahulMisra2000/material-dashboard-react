@@ -23,7 +23,7 @@ import { MaterialUIControllerProvider } from "context";
 
 // *** MY PROVIDERS ***
 import { UserProvider } from "./context/UserContext";
-import { FirestoreProvider } from "../src/context/FirestoreContext";
+import { FirestoreProvider } from "./context/FirestoreContext";
 
 const container = document.getElementById("app");
 const root = createRoot(container);

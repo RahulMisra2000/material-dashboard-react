@@ -30,9 +30,14 @@ import Header from "layouts/welcome/components/Header";
 // MINE
 import { useUser } from "../../../src/context/UserContext"; // Import the custom hook to access user context
 import { useFirestore } from "../../../src/context/FirestoreContext";
-import envelopeImage from "../../../src/assets/images/envelope.webp";
+import WriteLimitManager from "../../services/writeLimitManager";
 
 import "./SendRequest.css";
+import { WebRounded } from "@mui/icons-material";
+
+const MAX_WRITES = 1;
+const LIMIT_NAME = "REQUESTID_1";
+const writeManager = new WriteLimitManager(LIMIT_NAME, MAX_WRITES); // uses SESSION STORAGE - lasts as long as the browser tab is open
 
 /**
  * Example -https://your-app.com/send-request/master-request/#providers=ACC,BAG,XYZ
@@ -43,7 +48,6 @@ import "./SendRequest.css";
 function Overview() {
   console.count(`SendRequest()'s first line`);
 
-  const [animateEnvelope, setAnimateEnvelope] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // Track error messages
 
   // eslint-disable-next-line
@@ -94,6 +98,12 @@ function Overview() {
       localError += `\nProviders hash (/#providers=) not provided in URL - Cannot send request to Firestore`;
     }
 
+    if (writeManager.isWriteLimitReached()) {
+      const writtenCount = writeManager.getWriteCount();
+      localError += `\nWrite limit reached for ${LIMIT_NAME} MAX:${MAX_WRITES} COUNT:${writtenCount}`;
+      console.warn("Write limit reached for this session");
+    }
+
     /* ************************************************* All criteria met so let's do the work ***************************************************************************** */
     // Update the STATE (errorMessage) only if an error has been found (localError) that is different from what is in the STATE (errorMessage)
     // To prevent infinite renders
@@ -120,8 +130,12 @@ function Overview() {
           localError += `Error writing to Firestore: ${error.message}`;
         }
       };
+      console.log(
+        `********************************************************** RECORD WRITTEN *************************************************`
+      );
 
       addRecordsToFirestore(); // Call the async function
+      writeManager.incrementWriteCount(); // Increment the write count
 
       // ************************************************* WORK ********************************************************
 
