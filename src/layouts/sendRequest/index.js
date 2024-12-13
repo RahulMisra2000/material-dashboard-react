@@ -35,9 +35,10 @@ import WriteLimitManager from "../../services/writeLimitManager";
 import "./SendRequest.css";
 import { WebRounded } from "@mui/icons-material";
 
+// uses SESSION STORAGE - lasts as long as the browser tab is open
 const MAX_WRITES = 1;
 const LIMIT_NAME = "REQUESTID_1";
-const writeManager = new WriteLimitManager(LIMIT_NAME, MAX_WRITES); // uses SESSION STORAGE - lasts as long as the browser tab is open
+const sessionWriteManager = new WriteLimitManager(LIMIT_NAME, MAX_WRITES);
 
 /**
  * Example -https://your-app.com/send-request/master-request/#providers=ACC,BAG,XYZ
@@ -98,8 +99,8 @@ function Overview() {
       localError += `\nProviders hash (/#providers=) not provided in URL - Cannot send request to Firestore`;
     }
 
-    if (writeManager.isWriteLimitReached()) {
-      const writtenCount = writeManager.getWriteCount();
+    if (sessionWriteManager.isWriteLimitReached()) {
+      const writtenCount = sessionWriteManager.getWriteCount();
       localError += `\nWrite limit reached for ${LIMIT_NAME} MAX:${MAX_WRITES} COUNT:${writtenCount}`;
       console.warn("Write limit reached for this session");
     }
@@ -124,6 +125,7 @@ function Overview() {
               date: new Date().toLocaleDateString(),
               time: new Date().toLocaleTimeString(),
             });
+            console.log(`*** Wrote to Firestore for Provider ${providers[i]}`);
           }
         } catch (error) {
           console.log(`Error writing to Firestore: ${error.message}`);
@@ -135,7 +137,7 @@ function Overview() {
       );
 
       addRecordsToFirestore(); // Call the async function
-      writeManager.incrementWriteCount(); // Increment the write count
+      sessionWriteManager.incrementWriteCount(); // Increment the write count
 
       // ************************************************* WORK ********************************************************
 
