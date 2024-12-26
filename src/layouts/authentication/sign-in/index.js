@@ -14,9 +14,15 @@ Coded by www.creative-tim.com
 */
 
 import { useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../../../firebase/config";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+
+// IF USING FIREBASE AUTHENTICATION
+// import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+// import { auth, googleProvider } from "../../../backendAsService/firebase-config";
+// import { getFirestore, doc, getDoc } from "firebase/firestore";
+
+// IF USING SUPABASE AUTHENTICATION
+import { supabase } from "../../../backendAsService/supabase-config";
+
 import { useNavigate, useLocation } from "react-router-dom";
 
 // react-router-dom components
@@ -49,7 +55,7 @@ function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [signInError, setSignInError] = useState("");
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
-  const db = getFirestore();
+  // const db = getFirestore();
   const navigate = useNavigate();
 
   // Google Sign-In
@@ -58,10 +64,26 @@ function Basic() {
     event.preventDefault();
 
     try {
+      /*  USING FIREBASE AUTHENTICATION
       const result = await signInWithPopup(auth, googleProvider);
       const loggedInUser = result.user;
       console.log({ loggedInUser });
+      */
 
+      // USING SUPABASE AUTHENTICATION
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+
+      console.log(data);
+
+      if (error) {
+        console.error("Error signing in:", error.message);
+        setSignInError(`Sign in error: ${error.message}`);
+        return;
+      }
+
+      /*
       // Check if the email is allowed
       const docRef = doc(db, "allowedUsers", loggedInUser.email);
       const docSnap = await getDoc(docRef);
@@ -76,10 +98,13 @@ function Basic() {
         console.log(`User is allowed:`, loggedInUser.email);
         navigate("/", { replace: true });
       }
+      */
 
+      // navigate("/", { replace: true });
       // alert('Logged in successfully with Google!');
     } catch (error) {
       console.log("Error logging in:", error.message);
+      setSignInError(`Sign in error: ${error.message}`);
     }
   };
 

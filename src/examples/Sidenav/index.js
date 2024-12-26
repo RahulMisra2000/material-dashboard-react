@@ -52,6 +52,8 @@ import { useUser } from "../../context/UserContext"; // Import the custom hook t
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const { user } = useUser(); // Get user from context
 
+  console.log({ user });
+
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();

@@ -13,7 +13,8 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { auth } from "../../../firebase/config";
+// import { auth } from "../../../backendAsService/firebase-config";
+import { supabase } from "../../../backendAsService/supabase-config";
 import { useNavigate } from "react-router-dom";
 
 function Basic() {
@@ -21,10 +22,16 @@ function Basic() {
 
   (async () => {
     try {
-      await auth.signOut();
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("Error signing out:", error.message);
+        return;
+      }
       navigate("/", { replace: true });
-    } catch (error) {
-      console.log("Error logging out:", error.message);
+      console.log("Successfully signed out");
+    } catch (err) {
+      console.error("Unexpected error:", err);
     }
   })();
 

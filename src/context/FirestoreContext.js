@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
 
 import { useUser } from "./UserContext"; // Import the custom hook to access user context
-import { db } from "../firebase/config";
+import { db } from "../backendAsService/firebase-config"; // Import your Firestore instance
 
 // Create a context for Firestore
 const FirestoreContext = createContext();

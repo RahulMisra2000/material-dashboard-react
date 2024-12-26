@@ -23,7 +23,7 @@ import { MaterialUIControllerProvider } from "context";
 
 // *** MY PROVIDERS ***
 import { UserProvider } from "./context/UserContext";
-import { FirestoreProvider } from "./context/FirestoreContext";
+// import { FirestoreProvider } from "./context/FirestoreContext";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
@@ -31,11 +31,9 @@ const root = createRoot(container);
 root.render(
   <BrowserRouter>
     <UserProvider>
-      <FirestoreProvider>
-        <MaterialUIControllerProvider>
-          <App />
-        </MaterialUIControllerProvider>
-      </FirestoreProvider>
+      <MaterialUIControllerProvider>
+        <App />
+      </MaterialUIControllerProvider>
     </UserProvider>
   </BrowserRouter>
 );

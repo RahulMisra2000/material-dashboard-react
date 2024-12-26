@@ -60,7 +60,7 @@ import useAppLogger from "../src/hooks/useAppLogger";
 import { addRequest } from "../src/services/requestsService";
 
 export default function App() {
-  console.count(`<App> Rendered`);
+  // console.count(`<App> Rendered`);
 
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -107,11 +107,11 @@ export default function App() {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
   useEffect(() => {
-    console.log(`*** App Mounted`);
+    // console.log(`*** App Mounted`);
     addRequest({ requestType: "Simple", msg: "Test Message" });
 
     return () => {
-      console.log("App Unmounted");
+      // console.log("App Unmounted");
     };
   }, []);
 
