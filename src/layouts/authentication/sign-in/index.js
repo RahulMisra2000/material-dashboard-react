@@ -71,15 +71,13 @@ function Basic() {
       */
 
       // USING SUPABASE AUTHENTICATION
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+        },
       });
-
-      if (error) {
-        console.error("**** Error signing in:", error.message);
-        setSignInError(`Sign in error: ${error.message}`);
-        return;
-      }
+      if (error) console.error("Error during sign in:", error.message);
 
       /*
       // Check if the email is allowed
