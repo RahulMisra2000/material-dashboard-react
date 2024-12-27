@@ -73,6 +73,9 @@ function Basic() {
       // USING SUPABASE AUTHENTICATION
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+        },
       });
       if (error) console.error("Error during sign in:", error.message);
 
