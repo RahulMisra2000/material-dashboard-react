@@ -75,10 +75,8 @@ function Basic() {
         provider: "google",
       });
 
-      console.log(data);
-
       if (error) {
-        console.error("Error signing in:", error.message);
+        console.error("**** Error signing in:", error.message);
         setSignInError(`Sign in error: ${error.message}`);
         return;
       }
@@ -103,7 +101,7 @@ function Basic() {
       // navigate("/", { replace: true });
       // alert('Logged in successfully with Google!');
     } catch (error) {
-      console.log("Error logging in:", error.message);
+      console.log("**** Error logging in:", error.message);
       setSignInError(`Sign in error: ${error.message}`);
     }
   };

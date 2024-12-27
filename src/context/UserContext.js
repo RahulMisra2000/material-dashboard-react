@@ -14,41 +14,51 @@ export const UserProvider = ({ children }) => {
   const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
-    const initializeUser = async () => {
+    const fetchSession = async () => {
       try {
         setLoading(true);
-
-        // Fetch the active session to determine if a user is logged in
         const {
           data: { session },
-          error: sessionError,
+          error,
         } = await supabase.auth.getSession();
-        if (sessionError) throw new Error(sessionError.message);
 
-        setUser(session?.user || null);
+        if (error) {
+          console.error("Error fetching session:", error.message);
+          throw error;
+        }
+
+        if (session) setUser(session.user);
       } catch (err) {
-        console.error("Error fetching user session:", err.message);
+        console.error("Error initializing user session:", err.message);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    initializeUser();
+    fetchSession();
 
     // Listen for authentication state changes
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log(`Inside onAuthStateChange() in UserContext.js, session is ${session}`);
-      setUser(session?.user || null);
+    const subscription = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
     });
 
-    // Cleanup subscription on unmount
     return () => {
-      subscription?.unsubscribe();
+      if (subscription && typeof subscription.unsubscribe === "function") {
+        subscription.unsubscribe();
+      }
     };
   }, []);
 
-  return <UserContext.Provider value={{ user, loading, error }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user, setUser, loading, error }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 // ************************************************************************************       *** FOR CONSUMER ***

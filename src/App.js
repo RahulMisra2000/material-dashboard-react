@@ -54,7 +54,7 @@ import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
 import Welcome from "./layouts/welcome";
-import SendRequest from "./layouts/sendRequest";
+// import SendRequest from "./layouts/sendRequest";
 
 import useAppLogger from "../src/hooks/useAppLogger";
 import { addRequest } from "../src/services/requestsService";
@@ -211,8 +211,15 @@ export default function App() {
 
         {/* These routes are not soft-coded in routes.js because I don't want them to appear in the SideNav */}
         <Route path="/welcome" element={<Welcome />} />
+
+        {/*
         <Route path="/send-request/:requestType" element={<SendRequest />} />
+
+        <Route path="/send-request" element={<SendRequest />} /> 
+        
         <Route path="/send-request" element={<SendRequest />} />
+        */}
+
         <Route path="*" element={<Navigate to="/welcome" />} />
         {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
       </Routes>
