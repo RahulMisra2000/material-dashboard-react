@@ -211,7 +211,7 @@ export default function App() {
 
         {/* These routes are not soft-coded in routes.js because I don't want them to appear in the SideNav */}
         <Route path="/welcome" element={<Welcome />} />
-
+        <Route path="/" element={<Welcome />} />
         {/*
         <Route path="/send-request/:requestType" element={<SendRequest />} />
 
