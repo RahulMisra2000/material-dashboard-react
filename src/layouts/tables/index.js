@@ -35,6 +35,8 @@ function Tables() {
   const { columns, rows } = authorsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
 
+  console.log(rows);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -59,7 +61,7 @@ function Tables() {
               <MDBox pt={3}>
                 <DataTable
                   table={{ columns, rows }}
-                  isSorted={false}
+                  isSorted={true}
                   entriesPerPage={false}
                   showTotalEntries={false}
                   noEndBorder
