@@ -35,7 +35,6 @@ export default function data() {
     if (error) {
       console.error("Error fetching authors:", error);
     } else {
-      console.log("Authors data:", data);
       setAuthors(data);
     }
   };

@@ -65,29 +65,29 @@ export default function data() {
   );
 
   const columns = [
-    { Header: "Request", accessor: "author", width: "45%", align: "left" },
-    { Header: "function", accessor: "function", align: "left" },
-    { Header: "status", accessor: "status", align: "center" },
-    { Header: "employed", accessor: "employed", align: "center" },
-    { Header: "action", accessor: "action", align: "center" },
+    { Header: "Provider", accessor: "provider", width: "45%", align: "left" },
+    { Header: "Request", accessor: "request", align: "left" },
+    { Header: "Status", accessor: "status", align: "center" },
+    { Header: "Resolved Date", accessor: "resolveddate", align: "center" },
+    { Header: "ID", accessor: "action", align: "center" },
   ];
 
   const rows = masterRequests?.map((request) => ({
-    Request: <Request image={request.image_url} name={request.name} email={request.email} />,
-    function: <Job title={request.providercode} description={request.description} />,
+    provider: <Request image={request.image_url} name={request.status} email={request.auth_id} />,
+    request: <Job title={request.providercode} description={request.description} />,
     status: (
       <MDBox ml={-1}>
         <MDBadge
           badgeContent={request.status}
-          color={request.status === "online" ? "success" : "dark"}
+          color={request?.status?.toUpperCase() == "RAN" ? "success" : "dark"}
           variant="gradient"
           size="sm"
         />
       </MDBox>
     ),
-    employed: (
+    resolveddate: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {request.employed_date}
+        {request.resolveddate}
       </MDTypography>
     ),
     action: (
