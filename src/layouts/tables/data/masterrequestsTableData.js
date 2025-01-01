@@ -15,6 +15,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 import { useState, useEffect } from "react";
+import Avatar from "react-avatar";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -44,33 +45,24 @@ export default function data() {
   }, []);
 
   // Component 1
-  const Component1 = ({ image, name, email }) => (
+  const Component1 = ({ image, pCode, rType }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
+      {false && <MDAvatar src={image} name={pCode} size="sm" />}
+      <Avatar name={pCode} size="40" round={true} />
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
-          {name}
+          {pCode}
         </MDTypography>
-        <MDTypography variant="caption">{email}</MDTypography>
+        <MDTypography variant="caption">{rType}</MDTypography>
       </MDBox>
     </MDBox>
   );
 
-  // Compoenent 2
-  const Component2 = ({ title, description }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {title}
-      </MDTypography>
-      <MDTypography variant="caption">{description}</MDTypography>
-    </MDBox>
-  );
-
   const columns = [
-    { Header: "Provider", accessor: "a", width: "30%", align: "left" },
-    { Header: "Request", accessor: "b", width: "30%", align: "left" },
-    { Header: "Respond By", accessor: "c", align: "left" },
-    { Header: "Status", accessor: "d", align: "center" },
+    { Header: "Provider", accessor: "a", width: "20%", align: "left" },
+    { Header: "Request ID", accessor: "b", width: "20%", align: "left" },
+    { Header: "Status", accessor: "c", align: "center" },
+    { Header: "Request Type", accessor: "d", align: "left" },
     { Header: "Resolved Date", accessor: "e", align: "center" },
     { Header: "Action", accessor: "f", align: "center" },
   ];
@@ -79,8 +71,8 @@ export default function data() {
     a: (
       <Component1
         image={request.image_url}
-        name={request.providercode}
-        email={request.requesttype}
+        pCode={request.providercode}
+        rType={request.requesttype}
       />
     ),
     b: (
@@ -88,8 +80,7 @@ export default function data() {
         {request.uuid}
       </MDTypography>
     ),
-    c: <Component2 title={request.providercode} description={request.respondby} />,
-    d: (
+    c: (
       <MDBox ml={-1}>
         <MDBadge
           badgeContent={request.status}
@@ -98,6 +89,13 @@ export default function data() {
           size="sm"
         />
       </MDBox>
+    ),
+    d: (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {request.ingesttab}
+        {request.runreport}
+        {request.reportidsuffix}
+      </MDTypography>
     ),
     e: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
