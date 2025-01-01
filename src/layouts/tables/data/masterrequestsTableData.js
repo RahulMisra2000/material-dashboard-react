@@ -43,7 +43,8 @@ export default function data() {
     fetchMasterRequests();
   }, []);
 
-  const Request = ({ image, name, email }) => (
+  // Component 1
+  const Component1 = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
       <MDBox ml={2} lineHeight={1}>
@@ -55,7 +56,8 @@ export default function data() {
     </MDBox>
   );
 
-  const Job = ({ title, description }) => (
+  // Compoenent 2
+  const Component2 = ({ title, description }) => (
     <MDBox lineHeight={1} textAlign="left">
       <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
         {title}
@@ -65,17 +67,29 @@ export default function data() {
   );
 
   const columns = [
-    { Header: "Provider", accessor: "provider", width: "45%", align: "left" },
-    { Header: "Request", accessor: "request", align: "left" },
-    { Header: "Status", accessor: "status", align: "center" },
-    { Header: "Resolved Date", accessor: "resolveddate", align: "center" },
-    { Header: "ID", accessor: "action", align: "center" },
+    { Header: "Provider", accessor: "a", width: "30%", align: "left" },
+    { Header: "Request", accessor: "b", width: "30%", align: "left" },
+    { Header: "Respond By", accessor: "c", align: "left" },
+    { Header: "Status", accessor: "d", align: "center" },
+    { Header: "Resolved Date", accessor: "e", align: "center" },
+    { Header: "Action", accessor: "f", align: "center" },
   ];
 
   const rows = masterRequests?.map((request) => ({
-    provider: <Request image={request.image_url} name={request.status} email={request.auth_id} />,
-    request: <Job title={request.providercode} description={request.description} />,
-    status: (
+    a: (
+      <Component1
+        image={request.image_url}
+        name={request.providercode}
+        email={request.requesttype}
+      />
+    ),
+    b: (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {request.uuid}
+      </MDTypography>
+    ),
+    c: <Component2 title={request.providercode} description={request.respondby} />,
+    d: (
       <MDBox ml={-1}>
         <MDBadge
           badgeContent={request.status}
@@ -85,12 +99,12 @@ export default function data() {
         />
       </MDBox>
     ),
-    resolveddate: (
+    e: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
         {request.resolveddate}
       </MDTypography>
     ),
-    action: (
+    f: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
         Edit
       </MDTypography>
