@@ -74,7 +74,7 @@ function Basic() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: process.env.REACT_APP_SUPABASE_REDIRECT_URL,
         },
       });
       if (error) console.error("Error during sign in:", error.message);
