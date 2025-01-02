@@ -1,15 +1,30 @@
 
+# COMMANDS
+firebase projects:list  will list all the firebase projects under the gmail account you are currently signed in. The current one will be marked current.
+If you want to make another one current you will do firebase use --add
+
 
 # HOW TO DEPLOY THIS APP TO FIREBASE HOSTING
-This app is connected to a firebase project under publicuser2000@gmail.com
-So after you build this project using 'npm run build'
-BEFORE doing 'firebase deploy' check which account firebase is currently using by doing 'firebase login:list'
-If it is not using publicuser2000@gmail.com then do 'firebase logout' and then do 'firebase login' and on the ensuing UI chose publicuser2000@gmail.com account
-Then do 'firebase deploy'
+This app is connected to a firebase project under Google account publicuser2000@gmail.com
+1.  Do a Production Build by doing 'npm run build'
+2.  Check who is logged in by doing 'firebase login:list'
+    If it is not publicuser2000@gmail.com then switch to that account by doing 'firebase logout' and then do 'firebase login' and select publicuser2000@gmail.com
+3.  Deploy to Firebase hosting by doing 'firebase deploy'
 
 
+# DATABASE
+Typically we create some backend service using eg. Express which exposes REST endpoints for Authentication and others for CRUD requests to a backend database. It may do authentication itself or may use an external Auth Provider. Then Express does authorization and then CRUD against a database like mysql. Express is on the server and can therefore hold on to mysql passwords and other sensitive info.
 
+BUT NOW, we have BaaS (Backend as a Service) such as Firebase, Supabase, etc. Here we don't have to worry about the above. They provide, Authentication Module, Database module, Storage module, etc. In order to use their Database and Storage module, we need to use their Authentication module because the Database and Storage security is handled by Rules defined in the BaaS and these rules have access to auth tokens when client apps make CRUD requests to the Database or Storage module. Firebase has a nosql database called Firestore and Supabase uses a sql database called Progress.
 
+In this React app, I was first using Firestore authentication and Firestore Database. Later I found out about Supabase's sql-like Progress database. So, I have commented out the Firestore authentication code and Firestore Database CRUD code and instead I am using Supabase's authentication and database.
+
+I am only using Firebase's Hosting module because Supabase does not support Hosting. That is why the URL for hosting is https://first-firebase-project-16d9e.web.app/ because when I first created the Firebase project I didn't realize that some names that were chosen at that time cannot be modified later. The web.app part at the end is fixed but the first part was my discretion and I did not chose a good name.
+
+# AUTHENTICATION IN SUPABASE
+Supabase supports email/pwd and also social media authentication like Google, Facebook, etc. 
+I have enabled only Google Authentication in Supabase dashboard.
+In the Google Cloud Project https://console.cloud.google.com/apis/credentials?project=hidden-marker-443816-m6 I created oAuth 2 Client Ids because Supabase's Google Provider https://supabase.com/dashboard/project/azqvskvdggwyqdlbpjda/auth/providers requires it.
 
 
 
