@@ -23,7 +23,7 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
-import { supabase } from "../../../../src/backendAsService/supabase-config";
+import { supabase } from "../../../backendAsService/supabase-config";
 
 const tableName = `masterrequests`;
 

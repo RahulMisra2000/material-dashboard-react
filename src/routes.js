@@ -46,6 +46,8 @@ import SignIn from "layouts/authentication/sign-in";
 import SignOut from "layouts/authentication/sign-out";
 import SignUp from "layouts/authentication/sign-up";
 
+import Crud from "layouts/crud";
+
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -94,6 +96,15 @@ const routes = [
     route: "/notifications",
     component: <Notifications />,
     visibility: "always",
+  },
+  {
+    type: "collapse",
+    name: "CRUD",
+    key: "crud",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/crud",
+    component: <Crud />,
+    visibility: "signedIn",
   },
   {
     type: "collapse",
