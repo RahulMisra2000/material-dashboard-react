@@ -142,9 +142,12 @@ const CrudComponent = () => {
       <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
         <DialogTitle>Update Record</DialogTitle>
         <DialogContent>
-          {Object.keys(formData).map(
-            (key) =>
-              key !== "id" && (
+          {Object.keys(formData).map((key) => {
+            // What fields to show on the Update Form
+            const includeFields = ["respondby", "description"];
+
+            if (includeFields.includes(key)) {
+              return (
                 <TextField
                   key={key}
                   margin="dense"
@@ -154,8 +157,9 @@ const CrudComponent = () => {
                   onChange={handleChange}
                   fullWidth
                 />
-              )
-          )}
+              );
+            }
+          })}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsDialogOpen(false)}>Cancel</Button>
