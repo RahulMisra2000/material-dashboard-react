@@ -1,4 +1,11 @@
 
+# PROJECTS USED
+There are links to these under publicuser2000@gmail.com's Chrome bookmark called Work/Projects
+Google Cloud Project (Because users will be signing on using Google)
+Firebase Project (to host the md react app in the cloud)
+Supabase Project ( for Authentication and Database module)
+
+
 # COMMANDS
 firebase projects:list  will list all the firebase projects under the gmail account you are currently signed in. The current one will be marked current.
 If you want to make another one current you will do firebase use --add
