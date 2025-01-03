@@ -43,7 +43,13 @@ const CrudComponent = () => {
   }, []);
 
   const fetchRecords = async () => {
-    const { data, error } = await supabase.from(tableName).select("*");
+    const { data, error } = await supabase
+      .from(tableName)
+      .select("*")
+      .order("id", { ascending: true }); // Change to `false` for descending order
+
+    console.log(data);
+
     if (error) {
       console.error("Error fetching records:", error);
     } else {
@@ -78,10 +84,10 @@ const CrudComponent = () => {
     const { id, ...remainingData } = formData; // Exclude 'id' from the payload for starters
 
     // Fields that can be updated in the Supabase table
-    const { respondby, description } = remainingData;
+    const { status, respondby, description } = remainingData;
 
     // Only contents of the payload data will update the record
-    const payloadData = { respondby, description };
+    const payloadData = { status, respondby, description };
     const { error } = await supabase.from(tableName).update(payloadData).eq("id", id);
 
     if (error) {
@@ -144,7 +150,7 @@ const CrudComponent = () => {
         <DialogContent>
           {Object.keys(formData).map((key) => {
             // What fields to show on the Update Form
-            const includeFields = ["respondby", "description"];
+            const includeFields = ["status", "respondby", "description"];
 
             if (includeFields.includes(key)) {
               return (
