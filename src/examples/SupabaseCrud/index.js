@@ -112,15 +112,18 @@ const CrudComponent = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "providercode", headerName: "Provider", width: 100 },
-    { field: "recordtype", headerName: "Type", width: 150 },
+    { field: "recordtype", headerName: "Source", width: 150 },
+    { field: "reminderdate", headerName: "Reminder Date", width: 150 },
     { field: "requestedby", headerName: "Requested By", width: 150 },
     { field: "reportidsuffix", headerName: "Request Chain", width: 150 },
     { field: "status", headerName: "Status", width: 100 },
     { field: "description", headerName: "Internal Note", width: 400 },
 
     { field: "respondby", headerName: "Respond By Date", width: 150 },
-    { field: "reminderdate", headerName: "Reminder Date", width: 150 },
     { field: "resolveddate", headerName: "Resolved Date", width: 150 },
+
+    { field: "requestworksheetrownumber", headerName: "Sheet Row#", width: 75 },
+
     {
       field: "actions",
       headerName: "Actions",
