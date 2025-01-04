@@ -46,7 +46,10 @@ const CrudComponent = () => {
     const { data, error } = await supabase
       .from(tableName)
       .select("*")
-      .order("id", { ascending: true }); // Change to `false` for descending order
+      .is("resolveddate", null) // Filter rows where resolveddate is null
+      .order("reminderdate", { descending: true }) // Sort by reminderdate
+      .order("providercode", { ascending: true }) // Then by providercode
+      .order("reportidsuffix", { ascending: true }); // Finally by reportidsuffix
 
     console.log(data);
 
@@ -108,9 +111,16 @@ const CrudComponent = () => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
-    { field: "providercode", headerName: "Provider", width: 150 },
-    { field: "status", headerName: "Status", width: 200 },
-    { field: "description", headerName: "Desc", width: 200 },
+    { field: "providercode", headerName: "Provider", width: 100 },
+    { field: "recordtype", headerName: "Type", width: 150 },
+    { field: "requestedby", headerName: "Requested By", width: 150 },
+    { field: "reportidsuffix", headerName: "Request Chain", width: 150 },
+    { field: "status", headerName: "Status", width: 100 },
+    { field: "description", headerName: "Internal Note", width: 400 },
+
+    { field: "respondby", headerName: "Respond By Date", width: 150 },
+    { field: "reminderdate", headerName: "Reminder Date", width: 150 },
+    { field: "resolveddate", headerName: "Resolved Date", width: 150 },
     {
       field: "actions",
       headerName: "Actions",
