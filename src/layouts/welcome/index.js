@@ -83,23 +83,76 @@ function Overview() {
 export default Overview;
 
 /*
--- 1. This is the sql to create public.users table in Supabase
-      create table
-        public.users (
-          id serial not null,
-          email text not null,
+
+    -- Create the `users` table in the public schema,if it doesn't already exist. Don't confuse this with the `auth.users` table which the system manages.
+        CREATE TABLE IF NOT EXISTS public.users (
+          id uuid PRIMARY KEY,         -- User's UID from Supabase Auth
+          email text UNIQUE NOT NULL,  -- Email of the user
           full_name text null,
           phone_number text null,
           profile_picture_url text null,
-          created_at timestamp with time zone null default now(),
-          updated_at timestamp with time zone null default now(),
-          is_active boolean null default true,
           is_verified boolean null default false,
           role text null,
-          constraint users_pkey primary key (id),
-          constraint users_email_key unique (email)
-        ) tablespace pg_default;
+          created_at timestamp with time zone DEFAULT now()
+        );
 
+
+          -- inserts a row into public.users when a new user is created in auth.users. Works even with RLS enabled on public.users.
+          -- Assuming error_logs table exists already
+          CREATE OR REPLACE FUNCTION handle_new_user()
+          RETURNS TRIGGER
+          SECURITY DEFINER
+          AS $$
+          BEGIN
+            -- Try to insert the new user into the `users` table
+            BEGIN
+              INSERT INTO public.users (id, email)
+              VALUES (NEW.id, NEW.email)
+              ON CONFLICT (id) DO NOTHING;
+            EXCEPTION
+              WHEN OTHERS THEN
+                -- Log the error into the error_logs table
+                INSERT INTO error_logs (error_message)
+                VALUES (SQLERRM);
+
+                -- Optionally, re-raise the error if you want to propagate it
+                RAISE;
+            END;
+
+            RETURN NEW;
+          END;
+          $$ LANGUAGE plpgsql;
+
+
+          -- trigger the function every time a user is created
+          create trigger on_auth_user_created
+            after insert on auth.users
+            for each row execute procedure public.handle_new_user();
+
+
+        -- This is for masterrequests table. You will need to create a similar policy for other tables as well so that only verified users can access them.
+        -- Note it says ALL, meaning all operations (SELECT, INSERT, UPDATE, DELETE) are restricted to verified users.
+            CREATE POLICY "Allow access only for verified users"
+            ON public.masterrequests
+            FOR ALL USING (
+              auth.uid() IN (SELECT id FROM public.users WHERE is_verified = true)
+            );
+
+         -- Example for another table
+          CREATE POLICY "Allow access only for verified users"
+          ON public.authors
+          FOR ALL USING (
+          auth.uid() IN (SELECT id FROM public.users WHERE is_verified = true)
+          );
+
+        -- This is for public.users table. Only the user himself can access his own record. This is needed because in the above sql ...see that a select is 
+        -- being done on public.users table to check if the user is verified. So, we need to allow the user to access his own record.      
+          CREATE POLICY "Allow users to select their own record if they are verified"
+          ON public.users
+          FOR SELECT
+          USING (id = auth.uid() AND is_verified = true);
+
+        -- SO, WHEN YOU WANT TO ALLOW A USER TO HAVE ACCESS then MAKE is_verified = true in public.users table in his record
 
 
 

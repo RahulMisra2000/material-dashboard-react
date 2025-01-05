@@ -28,7 +28,7 @@ import Footer from "examples/Footer";
 import Header from "layouts/welcome/components/Header";
 
 // MINE
-import { useUser } from "../../../src/context/UserContext"; // Import the custom hook to access user context
+import { useUser } from "../../context/UserContext"; // Import the custom hook to access user context
 import { useFirestore } from "../../../src/context/FirestoreContext";
 import WriteLimitManager from "../../services/writeLimitManager";
 

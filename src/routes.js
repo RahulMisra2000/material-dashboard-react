@@ -68,7 +68,7 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/tables",
     component: <Tables />,
-    visibility: "always", // This route is available to all users
+    visibility: "signedInAndVerified", // This route is available to all users
   },
   {
     type: "collapse",
@@ -104,7 +104,7 @@ const routes = [
     icon: <Icon fontSize="small">login</Icon>,
     route: "/crud",
     component: <Crud />,
-    visibility: "signedIn",
+    visibility: "signedInAndVerified",
   },
   {
     type: "collapse",

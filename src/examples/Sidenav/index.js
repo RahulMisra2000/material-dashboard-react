@@ -70,6 +70,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
   const isSignedIn = !!user; // Boolean value indicating if the user is signed in
+  const isVerified = !!user?.is_verified;
 
   useEffect(() => {
     // A function that sets the mini state of the sidenav.
@@ -100,6 +101,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       const showItem =
         visibility === "always" ||
         (visibility === "signedIn" && isSignedIn) ||
+        (visibility === "signedInAndVerified" && isSignedIn && isVerified) ||
         (visibility === "signedOut" && !isSignedIn);
 
       if (!showItem) return null; // Skip rendering if visibility does not match
