@@ -22,6 +22,7 @@ import { DataGrid, GridToolbarContainer, GridToolbarDensitySelector } from "@mui
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+import FindInPageIcon from "@mui/icons-material/FindInPage";
 import { supabase } from "../../backendAsService/supabase-config";
 import { isBefore, isAfter, isWithinInterval, addDays } from "date-fns";
 import "../SupabaseCrud/CrudComponent.css";
@@ -193,6 +194,14 @@ const CrudComponent = () => {
     setIsAddDialogOpen(false); // Close Add Dialog
   };
 
+  // Cell click handler for the specific column (e.g., 'requestworksheetrownumber' column)
+  const handleUrlClick = (requestworksheetrownumber) => {
+    const url = `https://docs.google.com/spreadsheets/d/1rim4cgB2uWV55vkKD-bZeipsc9YZbeHeSrWUb7aZvWs/edit#gid=0&range=A${requestworksheetrownumber}`;
+    if (url) {
+      window.open(url, "_blank"); // Open the URL in a new tab
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -224,23 +233,38 @@ const CrudComponent = () => {
     { field: "respondby", headerName: "Deadline", width: 150 },
     { field: "resolveddate", headerName: "Resolved", width: 150 },
 
-    { field: "requestworksheetrownumber", headerName: "Sheet Row#", width: 75 },
-
     {
-      field: "actions",
-      headerName: "Actions",
+      field: "requestworksheetrownumber",
+      headerName: "Request Sheet",
+      width: 75,
       sortable: false,
-      renderCell: (params) => (
-        <Box>
-          <IconButton onClick={() => handleUpdateClick(params.row)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={() => handleDeleteClick(params.row)}>
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-      ),
-    },
+      renderCell: (params) => {
+        if (!params.row.requestworksheetrownumber) return null;
+        
+        return (
+          <Box>
+            <IconButton onClick={() => handleUrlClick(params.row.requestworksheetrownumber)}>
+              <FindInPageIcon />
+            </IconButton>
+          </Box>
+        );
+      },
+      
+      {
+        field: "actions",
+        headerName: "Actions",
+        sortable: false,
+        renderCell: (params) => (
+          <Box>
+            <IconButton onClick={() => handleUpdateClick(params.row)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton onClick={() => handleDeleteClick(params.row)}>
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        ),
+      },
   ];
 
   return (
@@ -267,24 +291,43 @@ const CrudComponent = () => {
       <Dialog open={isUpdateDialogOpen} onClose={() => setIsUpdateDialogOpen(false)}>
         <DialogTitle>Update Record</DialogTitle>
         <DialogContent>
-          {Object.keys(formData).map((key) => {
-            // What fields to show on the Update Form
-            const includeFields = ["providercode", "reminderdate", "reportidsuffix", "description"];
-
-            if (includeFields.includes(key)) {
-              return (
-                <TextField
-                  key={key}
-                  margin="dense"
-                  label={key}
-                  name={key}
-                  value={formData[key] || ""}
-                  onChange={handleChange}
-                  fullWidth
-                />
-              );
-            }
-          })}
+          <TextField
+            margin="dense"
+            label="Provider"
+            name="providercode"
+            value={formData.providercode || "ACC"}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            label="Remind By (Date)"
+            name="reminderdate"
+            value={formData.reminderdate || ""}
+            onChange={handleChange}
+            fullWidth
+            inputProps={{
+              pattern: "^d{4}-d{2}-d{2}$", // Regex for YYYY-MM-DD format
+            }}
+            helperText="Please enter the date in YYYY-MM-DD format"
+            error={formData.reminderdate && !/^\d{4}-\d{2}-\d{2}$/.test(formData.reminderdate)} // Show error if format is incorrect
+          />
+          <TextField
+            margin="dense"
+            label="Request Chain"
+            name="reportidsuffix"
+            value={formData.reportidsuffix || ""}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            label="Internal Note"
+            name="description"
+            value={formData.description || ""}
+            onChange={handleChange}
+            fullWidth
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsUpdateDialogOpen(false)}>Cancel</Button>
