@@ -239,32 +239,35 @@ const CrudComponent = () => {
       width: 75,
       sortable: false,
       renderCell: (params) => {
-        if (!params.row.requestworksheetrownumber) return null;
-        
-        return (
-          <Box>
-            <IconButton onClick={() => handleUrlClick(params.row.requestworksheetrownumber)}>
-              <FindInPageIcon />
-            </IconButton>
-          </Box>
-        );
+        if (params.row.requestworksheetrownumber) {
+          return (
+            <Box>
+              <IconButton onClick={() => handleUrlClick(params.row.requestworksheetrownumber)}>
+                <FindInPageIcon />
+              </IconButton>
+            </Box>
+          );
+        } else {
+          return null;
+        } // Return null if the cell is empty
       },
-      
-      {
-        field: "actions",
-        headerName: "Actions",
-        sortable: false,
-        renderCell: (params) => (
-          <Box>
-            <IconButton onClick={() => handleUpdateClick(params.row)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => handleDeleteClick(params.row)}>
-              <DeleteIcon />
-            </IconButton>
-          </Box>
-        ),
-      },
+    },
+
+    {
+      field: "actions",
+      headerName: "Actions",
+      sortable: false,
+      renderCell: (params) => (
+        <Box>
+          <IconButton onClick={() => handleUpdateClick(params.row)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton onClick={() => handleDeleteClick(params.row)}>
+            <DeleteIcon />
+          </IconButton>
+        </Box>
+      ),
+    },
   ];
 
   return (
