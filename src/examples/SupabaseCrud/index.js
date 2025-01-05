@@ -27,6 +27,8 @@ import { isBefore, isAfter, isWithinInterval, addDays } from "date-fns";
 import "../SupabaseCrud/CrudComponent.css";
 import PropTypes from "prop-types";
 
+import { useUser } from "../../../src/context/UserContext"; // Import the custom hook to access user context
+
 const tableName = `masterrequests`;
 
 const CustomToolbar = ({ onAddClick }) => {
@@ -62,6 +64,8 @@ const CrudComponent = () => {
     page: 0,
   });
 
+  // eslint-disable-next-line
+  const { user, loading, error } = useUser();
   const today = new Date();
 
   const getRowClassName = (params) => {
@@ -139,10 +143,26 @@ const CrudComponent = () => {
     const { id, ...remainingData } = formData; // Exclude 'id' from the payload for starters
 
     // Fields that can be updated in the Supabase table
-    const { status, respondby, description } = remainingData;
+    const {
+      providercode,
+      reminderdate,
+      reportidsuffix,
+      description,
+      recordtype: source,
+      status,
+      requestedby,
+    } = remainingData;
 
     // Only contents of the payload data will update the record
-    const payloadData = { status, respondby, description };
+    const payloadData = {
+      providercode,
+      reminderdate,
+      reportidsuffix,
+      description,
+      recordtype: source,
+      status,
+      requestedby,
+    };
     const { error } = await supabase.from(tableName).update(payloadData).eq("id", id);
 
     if (error) {
@@ -157,7 +177,7 @@ const CrudComponent = () => {
   const addRecord = async () => {
     const source = `REACT`;
     const status = `NEW`;
-    const requestedby = `TBD`;
+    const requestedby = user?.email || "Unknown from React";
 
     const { providercode, reminderdate, reportidsuffix, description } = formData;
     const payloadData = {
@@ -259,7 +279,7 @@ const CrudComponent = () => {
             // What fields to show on the Update Form
             const includeFields = ["status", "respondby", "description"];
 
-            if (includeFields.includes(key)) {
+            if (true || includeFields.includes(key)) {
               return (
                 <TextField
                   key={key}
