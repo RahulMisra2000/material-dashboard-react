@@ -17,7 +17,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer, GridToolbarDensitySelector } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { supabase } from "../../backendAsService/supabase-config";
@@ -25,6 +25,14 @@ import { isBefore, isAfter, isWithinInterval, addDays } from "date-fns";
 import "../SupabaseCrud/CrudComponent.css";
 
 const tableName = `masterrequests`;
+
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarDensitySelector />
+    </GridToolbarContainer>
+  );
+}
 
 const CrudComponent = () => {
   const [records, setRecords] = useState([]);
@@ -182,6 +190,9 @@ const CrudComponent = () => {
           onPaginationModelChange={setPaginationModel}
           pagination
           getRowClassName={getRowClassName}
+          slots={{
+            toolbar: CustomToolbar,
+          }}
         />
       </TableContainer>
 
