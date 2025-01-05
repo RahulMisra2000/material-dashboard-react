@@ -154,5 +154,27 @@ export default createTheme({
     MuiDialogContent: { ...dialogContent },
     MuiDialogContentText: { ...dialogContentText },
     MuiDialogActions: { ...dialogActions },
+
+    // Added by RM 1/4/2025
+    MuiDataGrid: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#303030",
+        },
+        columnHeaders: {
+          backgroundColor: "#424242",
+          color: "#ffffff",
+          fontWeight: "bold",
+        },
+        cell: {
+          color: "#e0e0e0",
+        },
+        row: {
+          "&:hover": {
+            backgroundColor: "#616161",
+          },
+        },
+      },
+    },
   },
 });

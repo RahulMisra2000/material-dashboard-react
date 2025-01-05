@@ -20,8 +20,9 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { createClient } from "@supabase/supabase-js";
 import { supabase } from "../../backendAsService/supabase-config";
+import { isBefore, isAfter, isWithinInterval, addDays } from "date-fns";
+import "../SupabaseCrud/CrudComponent.css";
 
 const tableName = `masterrequests`;
 
@@ -38,6 +39,31 @@ const CrudComponent = () => {
     page: 0,
   });
 
+  const today = new Date();
+
+  const getRowClassName = (params) => {
+    const rowDate = new Date(params.row.reminderdate?.trim()); // Convert date string to Date object
+
+    // Check if the date is null or not a valid date
+    if (!rowDate || isNaN(new Date(rowDate).getTime())) {
+      return ""; // Return empty string if date is null or invalid
+    }
+
+    if (isBefore(rowDate, today)) {
+      return "row-before-today"; // Dates before today
+    } else if (
+      isWithinInterval(rowDate, {
+        start: today,
+        end: addDays(today, 7),
+      })
+    ) {
+      return "row-today-to-week"; // Dates between today and one week from today (inclusive)
+    } else if (isAfter(rowDate, addDays(today, 7))) {
+      return "row-after-week"; // Dates beyond one week from today
+    }
+    return ""; // Default class if none of the above conditions are met
+  };
+
   useEffect(() => {
     fetchRecords();
   }, []);
@@ -47,7 +73,7 @@ const CrudComponent = () => {
       .from(tableName)
       .select("*")
       .is("resolveddate", null) // Filter rows where resolveddate is null
-      .order("reminderdate", { descending: true }) // Sort by reminderdate
+      .order("reminderdate", { ascending: true }) // Sort by reminderdate
       .order("providercode", { ascending: true }) // Then by providercode
       .order("reportidsuffix", { ascending: true }); // Finally by reportidsuffix
 
@@ -113,14 +139,14 @@ const CrudComponent = () => {
     { field: "id", headerName: "ID", width: 90 },
     { field: "providercode", headerName: "Provider", width: 100 },
     { field: "recordtype", headerName: "Source", width: 150 },
-    { field: "reminderdate", headerName: "Reminder Date", width: 150 },
-    { field: "requestedby", headerName: "Requested By", width: 150 },
+    { field: "reminderdate", headerName: "Reminder", width: 150 },
+    { field: "requestedby", headerName: "Requested", width: 150 },
     { field: "reportidsuffix", headerName: "Request Chain", width: 150 },
     { field: "status", headerName: "Status", width: 100 },
     { field: "description", headerName: "Internal Note", width: 400 },
 
-    { field: "respondby", headerName: "Respond By Date", width: 150 },
-    { field: "resolveddate", headerName: "Resolved Date", width: 150 },
+    { field: "respondby", headerName: "Deadline", width: 150 },
+    { field: "resolveddate", headerName: "Resolved", width: 150 },
 
     { field: "requestworksheetrownumber", headerName: "Sheet Row#", width: 75 },
 
@@ -155,6 +181,7 @@ const CrudComponent = () => {
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           pagination
+          getRowClassName={getRowClassName}
         />
       </TableContainer>
 

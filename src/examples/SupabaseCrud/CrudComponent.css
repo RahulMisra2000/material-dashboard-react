@@ -1,0 +1,11 @@
+.row-before-today {
+      background-color: rgba(255, 99, 71, 0.5) !important; /* Light red */
+    }
+    
+.row-today-to-week {
+      background-color: rgba(255, 229, 100, 0.5) !important; /* Light yellow */
+}
+
+.row-after-week {
+      background-color: rgba(144, 238, 144, 0.5) !important; /* Light green */
+}
