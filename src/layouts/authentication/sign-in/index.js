@@ -77,7 +77,11 @@ function Basic() {
           redirectTo: process.env.REACT_APP_SUPABASE_REDIRECT_URL,
         },
       });
-      if (error) console.error("Error during sign in:", error.message);
+
+      if (error) {
+        console.error("Pre-OAuth Error during sign in:", error.message);
+        throw error;
+      }
 
       /*
       // Check if the email is allowed
@@ -99,8 +103,8 @@ function Basic() {
       // navigate("/", { replace: true });
       // alert('Logged in successfully with Google!');
     } catch (error) {
-      console.log("**** Error logging in:", error.message);
-      setSignInError(`Sign in error: ${error.message}`);
+      console.log("Pre-OAuth Error during sign in:", error.message);
+      setSignInError(`Pre-OAuth Error during sign in: ${error.message}`);
     }
   };
 

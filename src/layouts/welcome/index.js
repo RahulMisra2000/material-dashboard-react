@@ -13,8 +13,8 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import React from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -31,6 +31,27 @@ import Header from "layouts/welcome/components/Header";
 function Overview() {
   const location = useLocation();
   const message = location.state?.message || "";
+
+  const navigate = useNavigate();
+
+  // https://fir-proj-clearinsight.web.app/?error=server_error&error_code=unexpected_failure&error_description=Database+error+saving+new+user#error=server_error&error_code=unexpected_failure&error_description=Database+error+saving+new+user
+  // If there is a problem with the OAuth redirect, display an error message
+  useEffect(() => {
+    const handleOAuthRedirect = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const error = params.get("error");
+      const errorDescription = params.get("error_description");
+
+      if (error) {
+        console.error("OAuth error:", errorDescription);
+        alert(`Sign-in failed: ${errorDescription}`);
+        navigate("/Welcome"); // Redirect back to login page
+        return;
+      }
+    };
+
+    handleOAuthRedirect();
+  }, [navigate]);
 
   return (
     <DashboardLayout>
@@ -60,3 +81,27 @@ function Overview() {
 }
 
 export default Overview;
+
+/*
+-- 1. This is the sql to create public.users table in Supabase
+      create table
+        public.users (
+          id serial not null,
+          email text not null,
+          full_name text null,
+          phone_number text null,
+          profile_picture_url text null,
+          created_at timestamp with time zone null default now(),
+          updated_at timestamp with time zone null default now(),
+          is_active boolean null default true,
+          is_verified boolean null default false,
+          role text null,
+          constraint users_pkey primary key (id),
+          constraint users_email_key unique (email)
+        ) tablespace pg_default;
+
+
+
+
+
+*/
