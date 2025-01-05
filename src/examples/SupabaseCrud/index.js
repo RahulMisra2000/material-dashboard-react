@@ -15,30 +15,45 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Toolbar,
   Typography,
 } from "@mui/material";
 import { DataGrid, GridToolbarContainer, GridToolbarDensitySelector } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
 import { supabase } from "../../backendAsService/supabase-config";
 import { isBefore, isAfter, isWithinInterval, addDays } from "date-fns";
 import "../SupabaseCrud/CrudComponent.css";
+import PropTypes from "prop-types";
 
 const tableName = `masterrequests`;
 
-function CustomToolbar() {
+const CustomToolbar = ({ onAddClick }) => {
   return (
     <GridToolbarContainer>
       <GridToolbarDensitySelector />
+      <Button
+        variant="text"
+        color="primary"
+        size="small"
+        startIcon={<AddIcon />}
+        onClick={onAddClick}
+      >
+        Add Request
+      </Button>
     </GridToolbarContainer>
   );
-}
+};
 
 const CrudComponent = () => {
   const [records, setRecords] = useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   const [formData, setFormData] = useState({});
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -85,8 +100,6 @@ const CrudComponent = () => {
       .order("providercode", { ascending: true }) // Then by providercode
       .order("reportidsuffix", { ascending: true }); // Finally by reportidsuffix
 
-    console.log(data);
-
     if (error) {
       console.error("Error fetching records:", error);
     } else {
@@ -94,18 +107,23 @@ const CrudComponent = () => {
     }
   };
 
-  const handleUpdate = (record) => {
+  const handleAddClick = () => {
+    setFormData({}); // Clear the form data
+    setIsAddDialogOpen(true); // Open the dialog for adding a new record
+  };
+
+  const handleUpdateClick = (record) => {
     setSelectedRecord(record);
     setFormData(record);
-    setIsDialogOpen(true);
+    setIsUpdateDialogOpen(true);
   };
 
-  const handleDelete = (record) => {
+  const handleDeleteClick = (record) => {
     setSelectedRecord(record);
-    setIsDeleteOpen(true);
+    setIsDeleteDialogOpen(true);
   };
 
-  const confirmDelete = async () => {
+  const deleteRecord = async () => {
     const { id } = selectedRecord;
     const { error } = await supabase.from(tableName).delete().eq("id", id);
     if (error) {
@@ -114,10 +132,10 @@ const CrudComponent = () => {
       setSnackbarMessage("Record deleted successfully.");
       fetchRecords();
     }
-    setIsDeleteOpen(false);
+    setIsDeleteDialogOpen(false);
   };
 
-  const saveChanges = async () => {
+  const updateRecord = async () => {
     const { id, ...remainingData } = formData; // Exclude 'id' from the payload for starters
 
     // Fields that can be updated in the Supabase table
@@ -133,7 +151,34 @@ const CrudComponent = () => {
       setSnackbarMessage("Record updated successfully.");
       fetchRecords();
     }
-    setIsDialogOpen(false);
+    setIsUpdateDialogOpen(false);
+  };
+
+  const addRecord = async () => {
+    const source = `REACT`;
+    const status = `NEW`;
+    const requestedby = `TBD`;
+
+    const { providercode, reminderdate, reportidsuffix, description } = formData;
+    const payloadData = {
+      providercode,
+      reminderdate,
+      reportidsuffix,
+      description,
+      recordtype: source,
+      status,
+      requestedby,
+    };
+
+    const { error } = await supabase.from(tableName).insert([payloadData]);
+
+    if (error) {
+      console.error("Error adding record:", error);
+    } else {
+      setSnackbarMessage("Record added successfully.");
+      fetchRecords();
+    }
+    setIsAddDialogOpen(false); // Close Add Dialog
   };
 
   const handleChange = (e) => {
@@ -142,6 +187,17 @@ const CrudComponent = () => {
   };
 
   const closeSnackbar = () => setSnackbarMessage("");
+
+  // Validation for the form
+  const isFormValid = () => {
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+    return (
+      formData.providercode &&
+      formData.reportidsuffix &&
+      formData.description &&
+      datePattern.test(formData.reminderdate)
+    );
+  };
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -164,10 +220,10 @@ const CrudComponent = () => {
       sortable: false,
       renderCell: (params) => (
         <Box>
-          <IconButton onClick={() => handleUpdate(params.row)}>
+          <IconButton onClick={() => handleUpdateClick(params.row)}>
             <EditIcon />
           </IconButton>
-          <IconButton onClick={() => handleDelete(params.row)}>
+          <IconButton onClick={() => handleDeleteClick(params.row)}>
             <DeleteIcon />
           </IconButton>
         </Box>
@@ -191,12 +247,12 @@ const CrudComponent = () => {
           pagination
           getRowClassName={getRowClassName}
           slots={{
-            toolbar: CustomToolbar,
+            toolbar: () => <CustomToolbar onAddClick={handleAddClick} />, // Pass the component and bind the props
           }}
         />
       </TableContainer>
 
-      <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+      <Dialog open={isUpdateDialogOpen} onClose={() => setIsUpdateDialogOpen(false)}>
         <DialogTitle>Update Record</DialogTitle>
         <DialogContent>
           {Object.keys(formData).map((key) => {
@@ -219,20 +275,69 @@ const CrudComponent = () => {
           })}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-          <Button onClick={saveChanges} variant="contained" color="primary">
+          <Button onClick={() => setIsUpdateDialogOpen(false)}>Cancel</Button>
+          <Button onClick={updateRecord} variant="contained" color="primary">
             Save
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>
+      <Dialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>Are you sure you want to delete this record?</DialogContent>
         <DialogActions>
-          <Button onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-          <Button onClick={confirmDelete} variant="contained" color="secondary">
+          <Button onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={deleteRecord} variant="contained" color="secondary">
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={isAddDialogOpen} onClose={() => setIsAddDialogOpen(false)}>
+        <DialogTitle>Add Request</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            label="Provider"
+            name="providercode"
+            value={formData.providercode || "ACC"}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            label="Remind By (Date)"
+            name="reminderdate"
+            value={formData.reminderdate || ""}
+            onChange={handleChange}
+            fullWidth
+            inputProps={{
+              pattern: "^d{4}-d{2}-d{2}$", // Regex for YYYY-MM-DD format
+            }}
+            helperText="Please enter the date in YYYY-MM-DD format"
+            error={formData.reminderdate && !/^\d{4}-\d{2}-\d{2}$/.test(formData.reminderdate)} // Show error if format is incorrect
+          />
+          <TextField
+            margin="dense"
+            label="Request Chain"
+            name="reportidsuffix"
+            value={formData.reportidsuffix || ""}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            label="Internal Note"
+            name="description"
+            value={formData.description || ""}
+            onChange={handleChange}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
+          <Button onClick={addRecord} variant="contained" color="primary" disabled={!isFormValid()}>
+            Add
           </Button>
         </DialogActions>
       </Dialog>
@@ -245,6 +350,10 @@ const CrudComponent = () => {
       />
     </Box>
   );
+};
+
+CustomToolbar.propTypes = {
+  onAddClick: PropTypes.func.isRequired, // Validate that it's a function and required
 };
 
 export default CrudComponent;
