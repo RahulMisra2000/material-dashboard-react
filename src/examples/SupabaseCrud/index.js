@@ -141,17 +141,10 @@ const CrudComponent = () => {
 
   const updateRecord = async () => {
     const { id, ...remainingData } = formData; // Exclude 'id' from the payload for starters
+    const requestedby = user?.email || "Unknown from React";
 
     // Fields that can be updated in the Supabase table
-    const {
-      providercode,
-      reminderdate,
-      reportidsuffix,
-      description,
-      recordtype: source,
-      status,
-      requestedby,
-    } = remainingData;
+    const { providercode, reminderdate, reportidsuffix, description } = remainingData;
 
     // Only contents of the payload data will update the record
     const payloadData = {
@@ -159,8 +152,6 @@ const CrudComponent = () => {
       reminderdate,
       reportidsuffix,
       description,
-      recordtype: source,
-      status,
       requestedby,
     };
     const { error } = await supabase.from(tableName).update(payloadData).eq("id", id);
@@ -185,6 +176,7 @@ const CrudComponent = () => {
       reminderdate,
       reportidsuffix,
       description,
+
       recordtype: source,
       status,
       requestedby,
@@ -277,9 +269,9 @@ const CrudComponent = () => {
         <DialogContent>
           {Object.keys(formData).map((key) => {
             // What fields to show on the Update Form
-            const includeFields = ["status", "respondby", "description"];
+            const includeFields = ["providercode", "reminderdate", "reportidsuffix", "description"];
 
-            if (true || includeFields.includes(key)) {
+            if (includeFields.includes(key)) {
               return (
                 <TextField
                   key={key}
@@ -296,7 +288,12 @@ const CrudComponent = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsUpdateDialogOpen(false)}>Cancel</Button>
-          <Button onClick={updateRecord} variant="contained" color="primary">
+          <Button
+            onClick={updateRecord}
+            variant="contained"
+            color="primary"
+            disabled={!isFormValid()}
+          >
             Save
           </Button>
         </DialogActions>
