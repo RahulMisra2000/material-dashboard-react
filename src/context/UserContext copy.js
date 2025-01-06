@@ -14,6 +14,49 @@ export const UserProvider = ({ children }) => {
   const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        setLoading(true);
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
+        if (error) {
+          console.error("Error fetching session:", error.message);
+          throw error;
+        }
+
+        // if (session) setUser(session.user);
+        if (session) {
+          // Fetch the user's data from the public.users table using session.user.id
+          const { data, error: userError } = await supabase
+            .from("users")
+            .select("*") // Adjust the columns you need from the public.users table
+            .eq("id", session.user.id);
+
+          if (userError) {
+            console.error("Error fetching user data:", userError.message);
+            throw userError;
+          }
+
+          // Merge user data with session data
+          setUser({
+            ...session.user,
+            is_verified: data[0]?.is_verified,
+            publicuserrecord: data[0],
+          });
+        }
+      } catch (err) {
+        console.error("Error initializing user session:", err.message);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSession();
+
     // Listen for authentication state changes
     const subscription = supabase.auth.onAuthStateChange((event, session) => {
       console.log({ event, session });
@@ -22,7 +65,7 @@ export const UserProvider = ({ children }) => {
         (async () => {
           const { data, error: userError } = await supabase
             .from("users")
-            .select("*") // The columns you need from the public.users table
+            .select("*") // Adjust the columns you need from the public.users table
             .eq("id", session.user.id);
 
           if (userError) {
@@ -36,6 +79,8 @@ export const UserProvider = ({ children }) => {
             publicuserrecord: data[0],
           });
         })();
+
+        // setUser(session.user);
       } else {
         setUser(null);
       }
@@ -48,7 +93,7 @@ export const UserProvider = ({ children }) => {
     };
   }, []);
 
-  console.log({ Where: `UserProvider Context`, user });
+  console.log({ user });
   return (
     <UserContext.Provider value={{ user, setUser, loading, error }}>
       {children}

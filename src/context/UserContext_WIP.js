@@ -60,7 +60,6 @@ export const UserProvider = ({ children }) => {
             // These are all the fields from public.users in Supabase
             publicuserrecord: publicUserData,
           });
-          console.log({ user });
         } else {
           console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!no session found");
         }
@@ -76,6 +75,7 @@ export const UserProvider = ({ children }) => {
 
     // Listen for authentication state changes
     const subscription = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log({ event });
       if (session) {
         const publicUserData = await fetchDataFrom_SchemaPublic_TableUsers(session.user.id);
         console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onAuthStateChange-session");
