@@ -166,6 +166,7 @@ export default function App() {
     </MDBox>
   );
 
+  console.log({ direction, layout });
   return direction === "rtl" ? (
     <CacheProvider value={rtlCache}>
       <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
@@ -209,6 +210,7 @@ export default function App() {
         </>
       )}
       {layout === "vr" && <Configurator />}
+
       <Routes>
         {getRoutes(routes)}
 

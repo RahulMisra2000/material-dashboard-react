@@ -32,6 +32,7 @@ export const UserProvider = ({ children }) => {
 
             if (userError) {
               console.error("Error fetching user data:", userError.message);
+              setError(userError.message);
             }
 
             // Merge user data with session data
@@ -40,9 +41,11 @@ export const UserProvider = ({ children }) => {
               is_verified: data[0]?.is_verified,
               publicuserrecord: data[0],
             });
+            setLoading(false);
           })();
         } else {
           setUser(null);
+          setLoading(false);
         }
       }, 0);
     });
