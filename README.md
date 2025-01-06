@@ -1,4 +1,8 @@
 
+# LINK TO GITHUB
+https://github.com/RahulMisra2000/material-dashboard-react
+
+
 # PROJECTS USED
 There are links to these under publicuser2000@gmail.com's Chrome bookmark called Work/Projects
 Google Cloud Project (Because users will be signing on using Google)
