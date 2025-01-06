@@ -52,8 +52,6 @@ import { useUser } from "../../context/UserContext"; // Import the custom hook t
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const { user } = useUser(); // Get user from context
 
-  console.log({ user });
-
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
@@ -202,14 +200,24 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       <MDBox p={2} mt="auto">
         <MDButton
           component="a"
-          href="https://www.creative-tim.com/product/material-dashboard-pro-react"
+          href="#"
           target="_blank"
           rel="noreferrer"
           variant="gradient"
           color={sidenavColor}
           fullWidth
         >
-          upgrade to pro
+          {user?.user_metadata?.avatar_url && (
+            <MDBox
+              component="img"
+              src={user?.user_metadata?.avatar_url}
+              alt=""
+              width="20%"
+              mr={1}
+              borderRadius="50%" // Makes the image circular
+            />
+          )}
+          {user?.user_metadata?.name || "Anonymous"}
         </MDButton>
       </MDBox>
     </SidenavRoot>
