@@ -19,6 +19,7 @@ import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
 
 import CircularProgress from "@mui/material/CircularProgress"; // Import the spinner
 import Box from "@mui/material/Box"; // Import Box for centering
@@ -68,7 +69,22 @@ function Dashboard() {
 
   // If there's an error, handle it (optional, for example show an error message)
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <DashboardLayout>
+        <DashboardNavbar />
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh" // Full height to center vertically
+        >
+          <MDTypography color="error" variant="h6">
+            Error: {error}
+          </MDTypography>
+        </Box>
+        <Footer />
+      </DashboardLayout>
+    );
   }
 
   // If no user then
