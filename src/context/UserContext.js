@@ -12,13 +12,14 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null); // User state
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
+  const simulateSlowConnection = false;
 
   useEffect(() => {
     // Listen for authentication state changes
     const subscription = supabase.auth.onAuthStateChange((event, session) => {
       console.log({ event, session });
 
-      // Reason for doing this is explained here https://supabase.com/docs/reference/javascript/auth-onauthstatechange
+      // Reason for doing setTimeout() is explained here https://supabase.com/docs/reference/javascript/auth-onauthstatechange
       setTimeout(async () => {
         // await on other Supabase function here
         // this runs right after the callback has finished
@@ -41,7 +42,14 @@ export const UserProvider = ({ children }) => {
               is_verified: data[0]?.is_verified,
               publicuserrecord: data[0],
             });
-            setLoading(false);
+
+            if (simulateSlowConnection) {
+              setTimeout(() => {
+                setLoading(false);
+              }, 3000);
+            } else {
+              setLoading(false);
+            }
           })();
         } else {
           setUser(null);

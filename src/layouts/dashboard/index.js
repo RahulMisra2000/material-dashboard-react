@@ -20,6 +20,9 @@ import Grid from "@mui/material/Grid";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 
+import CircularProgress from "@mui/material/CircularProgress"; // Import the spinner
+import Box from "@mui/material/Box"; // Import Box for centering
+
 import { useUser } from "../../context/UserContext"; // Import the custom hook to access user context
 
 // Material Dashboard 2 React example components
@@ -47,7 +50,20 @@ function Dashboard() {
 
   // If the data is still loading, you might want to show a loading spinner or message
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <DashboardLayout>
+        <DashboardNavbar />
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh" // Full height to center vertically
+        >
+          <CircularProgress color="primary" size={60} /> {/* Fancy spinner */}
+        </Box>
+        <Footer />
+      </DashboardLayout>
+    );
   }
 
   // If there's an error, handle it (optional, for example show an error message)
