@@ -147,12 +147,13 @@ export default Overview;
 
         -- This is for public.users table. Only the user himself can access his own record. This is needed because in the above sql ...see that a select is 
         -- being done on public.users table to check if the user is verified. So, we need to allow the user to access his own record.      
-          CREATE POLICY "Allow users to select their own record if they are verified"
+          
+          CREATE POLICY "Allow users to select their own record"
           ON public.users
           FOR SELECT
-          USING (id = auth.uid() AND is_verified = true);
-
-        -- SO, WHEN YOU WANT TO ALLOW A USER TO HAVE ACCESS then MAKE is_verified = true in public.users table in his record
+          USING (id = auth.uid());
+        
+          -- SO, WHEN YOU WANT TO ALLOW A USER TO HAVE ACCESS then MAKE is_verified = true in public.users table in his record
 
 
 

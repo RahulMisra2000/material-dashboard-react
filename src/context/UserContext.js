@@ -17,28 +17,34 @@ export const UserProvider = ({ children }) => {
     // Listen for authentication state changes
     const subscription = supabase.auth.onAuthStateChange((event, session) => {
       console.log({ event, session });
-      if (session) {
-        // Fetch the user's data from the public.users table using session.user.id
-        (async () => {
-          const { data, error: userError } = await supabase
-            .from("users")
-            .select("*") // The columns you need from the public.users table
-            .eq("id", session.user.id);
 
-          if (userError) {
-            console.error("Error fetching user data:", userError.message);
-          }
+      // Reason for doing this is explained here https://supabase.com/docs/reference/javascript/auth-onauthstatechange
+      setTimeout(async () => {
+        // await on other Supabase function here
+        // this runs right after the callback has finished
+        if (session) {
+          // Fetch the user's data from the public.users table using session.user.id
+          (async () => {
+            const { data, error: userError } = await supabase
+              .from("users")
+              .select("*") // The columns you need from the public.users table
+              .eq("id", session.user.id);
 
-          // Merge user data with session data
-          setUser({
-            ...session.user,
-            is_verified: data[0]?.is_verified,
-            publicuserrecord: data[0],
-          });
-        })();
-      } else {
-        setUser(null);
-      }
+            if (userError) {
+              console.error("Error fetching user data:", userError.message);
+            }
+
+            // Merge user data with session data
+            setUser({
+              ...session.user,
+              is_verified: data[0]?.is_verified,
+              publicuserrecord: data[0],
+            });
+          })();
+        } else {
+          setUser(null);
+        }
+      }, 0);
     });
 
     return () => {
