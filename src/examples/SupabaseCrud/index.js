@@ -53,6 +53,8 @@ const CustomToolbar = ({ onAddClick }) => {
 };
 
 const CrudComponent = () => {
+  const initialStateMessage = { msg: null, bgColor: "info" };
+
   const [records, setRecords] = useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
@@ -63,7 +65,7 @@ const CrudComponent = () => {
   const [formData, setFormData] = useState({});
 
   // bgColor: primary / secondary / info / success / warning / error / light / dark
-  const [stateMessage, setStateMessage] = useState({ msg: null, bgColor: "info" });
+  const [stateMessage, setStateMessage] = useState(initialStateMessage);
 
   const [paginationModel, setPaginationModel] = useState({
     pageSize: 5,
@@ -183,6 +185,11 @@ const CrudComponent = () => {
       setStateMessage({ msg: msg, bgColor: "error" }); // show only sanitized message to the user
     } finally {
       setIsAddDialogOpen(false); // Close Add Dialog
+
+      // Set a timeout to close the alert after 5 seconds
+      setTimeout(() => {
+        setStateMessage(initialStateMessage); // Clear the alert message (or set it to null, depending on your implementation)
+      }, 5000);
     }
   };
 
@@ -217,6 +224,10 @@ const CrudComponent = () => {
       setStateMessage({ msg: msg, bgColor: "error" }); // show only sanitized message to the user
     } finally {
       setIsUpdateDialogOpen(false); // Close Add Dialog
+      // Set a timeout to close the alert after 5 seconds
+      setTimeout(() => {
+        setStateMessage(initialStateMessage); // Clear the alert message (or set it to null, depending on your implementation)
+      }, 5000);
     }
   };
 
@@ -237,6 +248,10 @@ const CrudComponent = () => {
       setStateMessage({ msg: msg, bgColor: "error" }); // show only sanitized message to the user
     } finally {
       setIsDeleteDialogOpen(false); // Close Add Dialog
+      // Set a timeout to close the alert after 5 seconds
+      setTimeout(() => {
+        setStateMessage(initialStateMessage); // Clear the alert message (or set it to null, depending on your implementation)
+      }, 5000);
     }
   };
 
