@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   Dialog,
@@ -18,6 +19,8 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import MDTypography from "components/MDTypography";
+import MDAlert from "../../components/MDAlert";
 import { DataGrid, GridToolbarContainer, GridToolbarDensitySelector } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -58,7 +61,9 @@ const CrudComponent = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const [formData, setFormData] = useState({});
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  // bgColor: primary / secondary / info / success / warning / error / light / dark
+  const [stateMessage, setStateMessage] = useState({ msg: null, bgColor: "info" });
 
   const [paginationModel, setPaginationModel] = useState({
     pageSize: 5,
@@ -68,6 +73,14 @@ const CrudComponent = () => {
   // eslint-disable-next-line
   const { user, loading, error } = useUser();
   const today = new Date();
+
+  const renderAlert = (
+    <MDAlert color={stateMessage.bgColor} dismissible>
+      <MDTypography variant="body2" color="white">
+        {stateMessage.msg}
+      </MDTypography>
+    </MDAlert>
+  );
 
   const getRowClassName = (params) => {
     const rowDate = new Date(params.row.reminderdate?.trim()); // Convert date string to Date object
@@ -97,8 +110,7 @@ const CrudComponent = () => {
   }, []);
 
   const fetchRecords = async () => {
-    const errormsg1 = `Error fetching records in SupabseCrud/index.js`;
-    const errormsg2 = `Unexpected error fetching records in SupabseCrud/index.js`;
+    const msg = `Error fetching records in SupabseCrud/index.js`;
 
     try {
       const { data, error } = await supabase
@@ -110,15 +122,14 @@ const CrudComponent = () => {
         .order("reportidsuffix", { ascending: true });
 
       if (error) {
-        console.error(`${errormsg1}: ${error}`);
-        setSnackbarMessage(`${errormsg1}`);
         setRecords([]);
+        throw new Error(error || "Unknown error");
       } else {
         setRecords(data);
       }
-    } catch (error) {
-      console.error(`${errormsg1}: ${error}`);
-      setSnackbarMessage(`${errormsg2}`);
+    } catch (e) {
+      console.error({ msg, e }); // show both error messages in console
+      setStateMessage({ msg: msg, bgColor: "error" }); // show only sanitized message to the user
       setRecords([]);
     }
   };
@@ -139,45 +150,9 @@ const CrudComponent = () => {
     setIsDeleteDialogOpen(true);
   };
 
-  const deleteRecord = async () => {
-    const { id } = selectedRecord;
-    const { error } = await supabase.from(tableName).delete().eq("id", id);
-    if (error) {
-      console.error("Error deleting record:", error);
-    } else {
-      setSnackbarMessage("Record deleted successfully.");
-      fetchRecords();
-    }
-    setIsDeleteDialogOpen(false);
-  };
-
-  const updateRecord = async () => {
-    const { id, ...remainingData } = formData; // Exclude 'id' from the payload for starters
-    const requestedby = user?.email || "Unknown from React";
-
-    // Fields that can be updated in the Supabase table
-    const { providercode, reminderdate, reportidsuffix, description } = remainingData;
-
-    // Only contents of the payload data will update the record
-    const payloadData = {
-      providercode,
-      reminderdate,
-      reportidsuffix,
-      description,
-      requestedby,
-    };
-    const { error } = await supabase.from(tableName).update(payloadData).eq("id", id);
-
-    if (error) {
-      console.error("Error updating record:", error);
-    } else {
-      setSnackbarMessage("Record updated successfully.");
-      fetchRecords();
-    }
-    setIsUpdateDialogOpen(false);
-  };
-
   const addRecord = async () => {
+    const msg = `Error adding record in SupabseCrud/index.js`;
+
     const source = `REACT`;
     const status = `NEW`;
     const requestedby = user?.email || "Unknown from React";
@@ -194,15 +169,75 @@ const CrudComponent = () => {
       requestedby,
     };
 
-    const { error } = await supabase.from(tableName).insert([payloadData]);
+    try {
+      const { error } = await supabase.from(tableName).insert([payloadData]);
 
-    if (error) {
-      console.error("Error adding record:", error);
-    } else {
-      setSnackbarMessage("Record added successfully.");
+      if (error) {
+        throw new Error(error || "Unknown error");
+      }
+
+      setStateMessage({ msg: "Record added successfully", bgColor: "success" });
       fetchRecords();
+    } catch (e) {
+      console.error({ msg, e }); // show both error messages in console
+      setStateMessage({ msg: msg, bgColor: "error" }); // show only sanitized message to the user
+    } finally {
+      setIsAddDialogOpen(false); // Close Add Dialog
     }
-    setIsAddDialogOpen(false); // Close Add Dialog
+  };
+
+  const updateRecord = async () => {
+    const msg = `Error updating record in SupabseCrud/index.js`;
+
+    const { id, ...remainingData } = formData; // Exclude 'id' from the payload for starters
+    const requestedby = user?.email || "Unknown from React";
+
+    // Fields that can be updated in the Supabase table
+    const { providercode, reminderdate, reportidsuffix, description } = remainingData;
+
+    // Only contents of the payload data will update the record
+    const payloadData = {
+      providercode,
+      reminderdate,
+      reportidsuffix,
+      description,
+      requestedby,
+    };
+
+    try {
+      const { error } = await supabase.from(tableName).update(payloadData).eq("id", id);
+
+      if (error) {
+        throw new Error(error || "Unknown error");
+      }
+      setStateMessage("Record updated successfully.");
+      fetchRecords();
+    } catch (e) {
+      console.error({ msg, e }); // show both error messages in console
+      setStateMessage({ msg: msg, bgColor: "error" }); // show only sanitized message to the user
+    } finally {
+      setIsUpdateDialogOpen(false); // Close Add Dialog
+    }
+  };
+
+  const deleteRecord = async () => {
+    const msg = `Error deleting record in SupabseCrud/index.js`;
+
+    const { id } = selectedRecord;
+
+    try {
+      const { error } = await supabase.from(tableName).delete().eq("id", id);
+      if (error) {
+        throw new Error(error || "Unknown error");
+      }
+      setStateMessage("Record deleted successfully.");
+      fetchRecords();
+    } catch (e) {
+      console.error({ msg, e }); // show both error messages in console
+      setStateMessage({ msg: msg, bgColor: "error" }); // show only sanitized message to the user
+    } finally {
+      setIsDeleteDialogOpen(false); // Close Add Dialog
+    }
   };
 
   // Cell click handler for the specific column (e.g., 'requestworksheetrownumber' column)
@@ -217,8 +252,6 @@ const CrudComponent = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  const closeSnackbar = () => setSnackbarMessage("");
 
   // Validation for the form
   const isFormValid = () => {
@@ -283,9 +316,12 @@ const CrudComponent = () => {
 
   return (
     <Box sx={{ p: 3 }}>
+      {/* TITLE */}
       <Typography variant="h4" gutterBottom>
         CRUD Operations with Supabase
       </Typography>
+
+      {/* DATA GRID */}
       <TableContainer>
         <DataGrid
           rows={records}
@@ -302,6 +338,7 @@ const CrudComponent = () => {
         />
       </TableContainer>
 
+      {/* DIALOG WINDOWS */}
       <Dialog open={isUpdateDialogOpen} onClose={() => setIsUpdateDialogOpen(false)}>
         <DialogTitle>Update Record</DialogTitle>
         <DialogContent>
@@ -416,14 +453,8 @@ const CrudComponent = () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar
-        sx={{ height: "100%" }}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={!!snackbarMessage}
-        autoHideDuration={4000}
-        onClose={closeSnackbar}
-        message={snackbarMessage}
-      />
+      {/* ALERT */}
+      {stateMessage.msg && renderAlert}
     </Box>
   );
 };
