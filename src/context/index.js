@@ -77,7 +77,10 @@ function MaterialUIControllerProvider({ children }) {
     sidenavColor: "info",
     transparentNavbar: true,
     fixedNavbar: true,
+
+    // Keep the configurator window close to start with
     openConfigurator: false,
+
     direction: "ltr",
     layout: "dashboard",
     darkMode: false,
@@ -109,6 +112,7 @@ MaterialUIControllerProvider.propTypes = {
 };
 
 // Context module functions
+// Logical names for consumers to call, instead of calling dispatch with type and value
 const setMiniSidenav = (dispatch, value) => dispatch({ type: "MINI_SIDENAV", value });
 const setTransparentSidenav = (dispatch, value) => dispatch({ type: "TRANSPARENT_SIDENAV", value });
 const setWhiteSidenav = (dispatch, value) => dispatch({ type: "WHITE_SIDENAV", value });
@@ -122,6 +126,8 @@ const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 
 export {
   MaterialUIControllerProvider,
+
+  // For the consumers
   useMaterialUIController,
   setMiniSidenav,
   setTransparentSidenav,

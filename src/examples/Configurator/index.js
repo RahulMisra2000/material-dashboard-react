@@ -39,7 +39,10 @@ import ConfiguratorRoot from "examples/Configurator/ConfiguratorRoot";
 
 // Material Dashboard 2 React context
 import {
+  // To get the tools (controller(aka current state) and dispatch)
   useMaterialUIController,
+
+  // These will be called
   setOpenConfigurator,
   setTransparentSidenav,
   setWhiteSidenav,
@@ -49,7 +52,10 @@ import {
 } from "context";
 
 function Configurator() {
+  // Extracting the tools
   const [controller, dispatch] = useMaterialUIController();
+
+  // Extracting the current state
   const {
     openConfigurator,
     fixedNavbar,
@@ -288,7 +294,7 @@ function Configurator() {
         <MDBox mt={3} mb={2}>
           <MDButton
             component={Link}
-            href="https://www.creative-tim.com/learning-lab/react/quick-start/material-dashboard/"
+            href="https://www.clearinsight/solutions/"
             target="_blank"
             rel="noreferrer"
             color={darkMode ? "light" : "dark"}
@@ -300,11 +306,11 @@ function Configurator() {
         </MDBox>
         <MDBox display="flex" justifyContent="center">
           <GitHubButton
-            href="https://github.com/creativetimofficial/material-dashboard-react"
+            href="https://github.com"
             data-icon="octicon-star"
             data-size="large"
             data-show-count="true"
-            aria-label="Star creativetimofficial/material-dashboard-react on GitHub"
+            aria-label="Star material-dashboard-react on GitHub"
           >
             Star
           </GitHubButton>
@@ -329,7 +335,7 @@ function Configurator() {
             </MDBox>
             <MDButton
               component={Link}
-              href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/material-dashboard-react"
+              href="https://www.facebook.com/sharer/sharer.php?u=https://www.clearinsight.solutions"
               target="_blank"
               rel="noreferrer"
               color="dark"

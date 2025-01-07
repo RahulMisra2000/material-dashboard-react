@@ -17,6 +17,7 @@ Coded by www.creative-tim.com
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 
+// The theme is injected automatically by styled utility function. It comes from the ThemeProvider component that wraps your application at a higher level in the component tree.
 export default styled(Drawer)(({ theme, ownerState }) => {
   const { boxShadows, functions, transitions } = theme;
   const { openConfigurator } = ownerState;
