@@ -76,6 +76,7 @@ const CrudComponent = () => {
   const { user, loading, error } = useUser();
   const today = new Date();
 
+  // JUST JSX IN A VARIABLE
   const renderAlert = (
     <MDAlert color={stateMessage.bgColor} dismissible>
       <MDTypography variant="body2" color="white">
@@ -108,6 +109,7 @@ const CrudComponent = () => {
   };
 
   useEffect(() => {
+    console.log("%cCOMPONENT LOADED!!!!!", "color: blue; background-color: red; padding: 5px;");
     fetchRecords();
   }, []);
 
@@ -115,6 +117,7 @@ const CrudComponent = () => {
     const msg = `Error fetching records in SupabseCrud/index.js`;
 
     try {
+      console.log("%cFETCHING RECORDS!", "color: blue; background-color: red; padding: 5px;");
       const { data, error } = await supabase
         .from(tableName)
         .select("*")
