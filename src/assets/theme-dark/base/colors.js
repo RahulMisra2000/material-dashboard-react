@@ -20,6 +20,9 @@ Coded by www.creative-tim.com
  */
 
 const colors = {
+  // Adding this fixed the visibility of the Data Grid's footer in Dark Mode
+  mode: "dark",
+
   background: {
     default: "#1a2035",
     sidenav: "#1f283e",
