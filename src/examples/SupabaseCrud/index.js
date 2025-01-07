@@ -114,7 +114,7 @@ const CrudComponent = () => {
 
     try {
       const { data, error } = await supabase
-        .from(tableNamea)
+        .from(tableName)
         .select("*")
         .is("resolveddate", null)
         .order("reminderdate", { ascending: true })
@@ -210,7 +210,7 @@ const CrudComponent = () => {
       if (error) {
         throw new Error(error || "Unknown error");
       }
-      setStateMessage("Record updated successfully.");
+      setStateMessage({ msg: `Record id ${id} updated successfully`, bgColor: "success" });
       fetchRecords();
     } catch (e) {
       console.error({ msg, e }); // show both error messages in console
@@ -230,7 +230,7 @@ const CrudComponent = () => {
       if (error) {
         throw new Error(error || "Unknown error");
       }
-      setStateMessage("Record deleted successfully.");
+      setStateMessage({ msg: `Record id ${id} deleted successfully`, bgColor: "success" });
       fetchRecords();
     } catch (e) {
       console.error({ msg, e }); // show both error messages in console
