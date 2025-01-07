@@ -97,18 +97,29 @@ const CrudComponent = () => {
   }, []);
 
   const fetchRecords = async () => {
-    const { data, error } = await supabase
-      .from(tableName)
-      .select("*")
-      .is("resolveddate", null) // Filter rows where resolveddate is null
-      .order("reminderdate", { ascending: true }) // Sort by reminderdate
-      .order("providercode", { ascending: true }) // Then by providercode
-      .order("reportidsuffix", { ascending: true }); // Finally by reportidsuffix
+    const errormsg1 = `Error fetching records in SupabseCrud/index.js`;
+    const errormsg2 = `Unexpected error fetching records in SupabseCrud/index.js`;
 
-    if (error) {
-      console.error("Error fetching records:", error);
-    } else {
-      setRecords(data);
+    try {
+      const { data, error } = await supabase
+        .from(tableNamea)
+        .select("*")
+        .is("resolveddate", null)
+        .order("reminderdate", { ascending: true })
+        .order("providercode", { ascending: true })
+        .order("reportidsuffix", { ascending: true });
+
+      if (error) {
+        console.error(`${errormsg1}: ${error}`);
+        setSnackbarMessage(`${errormsg1}`);
+        setRecords([]);
+      } else {
+        setRecords(data);
+      }
+    } catch (error) {
+      console.error(`${errormsg1}: ${error}`);
+      setSnackbarMessage(`${errormsg2}`);
+      setRecords([]);
     }
   };
 
@@ -406,6 +417,8 @@ const CrudComponent = () => {
       </Dialog>
 
       <Snackbar
+        sx={{ height: "100%" }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={!!snackbarMessage}
         autoHideDuration={4000}
         onClose={closeSnackbar}
