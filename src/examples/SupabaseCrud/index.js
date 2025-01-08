@@ -285,10 +285,10 @@ const CrudComponent = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 50 },
     { field: "providercode", headerName: "Provider", width: 80 },
-    { field: "recordtype", headerName: "Source", width: 100 },
+    { field: "recordtype", headerName: "Source", width: 80 },
     { field: "reminderdate", headerName: "Reminder", width: 100 },
     { field: "requestedby", headerName: "Requested", width: 100 },
-    { field: "reportidsuffix", headerName: "Request Chain", width: 100 },
+    { field: "reportidsuffix", headerName: "Chain", width: 80 },
     { field: "status", headerName: "Status", width: 75 },
     { field: "description", headerName: "Internal Note", width: 400 },
     {
