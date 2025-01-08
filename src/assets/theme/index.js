@@ -153,5 +153,14 @@ export default createTheme({
     MuiDialogContent: { ...dialogContent },
     MuiDialogContentText: { ...dialogContentText },
     MuiDialogActions: { ...dialogActions },
+
+    // Added by RM 1/4/2025
+    MuiDataGrid: {
+      styleOverrides: {
+        root: {
+          fontSize: "0.875rem",
+        },
+      },
+    },
   },
 });

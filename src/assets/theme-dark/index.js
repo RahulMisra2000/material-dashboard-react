@@ -160,6 +160,7 @@ export default createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "#303030",
+          fontSize: "0.875rem",
         },
         columnHeaders: {
           backgroundColor: "#424242",

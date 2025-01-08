@@ -27,7 +27,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import FindInPageIcon from "@mui/icons-material/FindInPage";
 import { supabase } from "../../backendAsService/supabase-config";
-import { isBefore, isAfter, isWithinInterval, addDays } from "date-fns";
+import { format, isBefore, isAfter, isWithinInterval, addDays } from "date-fns";
 import "../SupabaseCrud/CrudComponent.css";
 import PropTypes from "prop-types";
 
@@ -283,29 +283,65 @@ const CrudComponent = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
-    { field: "providercode", headerName: "Provider", width: 100 },
-    { field: "recordtype", headerName: "Source", width: 150 },
-    { field: "reminderdate", headerName: "Reminder", width: 150 },
-    { field: "requestedby", headerName: "Requested", width: 150 },
-    { field: "reportidsuffix", headerName: "Request Chain", width: 150 },
-    { field: "status", headerName: "Status", width: 100 },
+    { field: "id", headerName: "ID", width: 50 },
+    { field: "providercode", headerName: "Provider", width: 80 },
+    { field: "recordtype", headerName: "Source", width: 100 },
+    { field: "reminderdate", headerName: "Reminder", width: 100 },
+    { field: "requestedby", headerName: "Requested", width: 100 },
+    { field: "reportidsuffix", headerName: "Request Chain", width: 100 },
+    { field: "status", headerName: "Status", width: 75 },
     { field: "description", headerName: "Internal Note", width: 400 },
-    { field: "created_at", headerName: "Created", width: 100 },
-    { field: "updated_at", headerName: "Updated", width: 100 },
+    {
+      field: "created_at",
+      headerName: "Created",
+      width: 150,
+      sortable: true,
+      renderCell: (params) => {
+        if (params.row.created_at) {
+          return (
+            <MDTypography variant="medium">
+              {format(new Date(params.row.created_at), "MM/dd/yyyy HH:mm")}
+            </MDTypography>
+          );
+        } else {
+          return null;
+        } // Return null if the cell is empty
+      },
+    },
 
-    { field: "respondby", headerName: "Deadline", width: 150 },
+    {
+      field: "updated_at",
+      headerName: "Updated",
+      width: 150,
+      sortable: true,
+      renderCell: (params) => {
+        if (params.row.updated_at) {
+          return (
+            <MDTypography variant="medium">
+              {format(new Date(params.row.updated_at), "MM/dd/yyyy HH:mm")}
+            </MDTypography>
+          );
+        } else {
+          return null;
+        } // Return null if the cell is empty
+      },
+    },
+
+    { field: "respondby", headerName: "Deadline", width: 100 },
     { field: "resolveddate", headerName: "Resolved", width: 150 },
 
     {
       field: "requestworksheetrownumber",
-      headerName: "Request Sheet",
+      headerName: "MRS",
       width: 75,
       sortable: false,
       renderCell: (params) => {
         if (params.row.requestworksheetrownumber) {
           return (
-            <Box>
+            <Box display="flex" alignItems="center">
+              <MDTypography variant="body2" sx={{ fontSize: "0.65rem", marginRight: 0 }}>
+                ({params.row.requestworksheetrownumber})
+              </MDTypography>
               <IconButton onClick={() => handleUrlClick(params.row.requestworksheetrownumber)}>
                 <FindInPageIcon />
               </IconButton>
