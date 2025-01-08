@@ -291,6 +291,8 @@ const CrudComponent = () => {
     { field: "reportidsuffix", headerName: "Request Chain", width: 150 },
     { field: "status", headerName: "Status", width: 100 },
     { field: "description", headerName: "Internal Note", width: 400 },
+    { field: "created_at", headerName: "Created", width: 100 },
+    { field: "updated_at", headerName: "Updated", width: 100 },
 
     { field: "respondby", headerName: "Deadline", width: 150 },
     { field: "resolveddate", headerName: "Resolved", width: 150 },

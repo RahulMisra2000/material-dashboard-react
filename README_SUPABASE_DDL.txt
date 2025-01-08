@@ -25,7 +25,7 @@ create table
   ) tablespace pg_default;
 
 
-  create table
+create table
   public.masterrequests (
     id bigint generated always as identity not null,
     auth_id uuid null,
@@ -63,6 +63,8 @@ create table
     recordtype text null,
     reminderdate date null,
     requestworksheetrownumber integer null,
+    created_at timestamp with time zone null default now(),
+    updated_at timestamp with time zone null,
     constraint masterrequests_pkey primary key (id)
   ) tablespace pg_default;
 
@@ -127,6 +129,16 @@ https://fir-proj-clearinsight.web.app
 
 http://localhost:3000
 Total URLs: 2
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -205,3 +217,22 @@ CREATE POLICY "Allow users to select their own record"
 ON public.users
 FOR SELECT
 USING (id = auth.uid());
+
+
+
+
+
+
+-- Do this to enable the extension that provides a function that you can use to update the updated_at column in the masterrequests table
+You will need a trigger also
+
+Navigate to the Database section in your Supabase dashboard.
+Click on Extensions.
+Locate moddatetime in the list and click Enable.
+
+Trigger
+create trigger handle_updated_at
+before update on masterrequests
+for each row execute procedure moddatetime(updated_at);
+
+
