@@ -65,8 +65,14 @@ create table
     requestworksheetrownumber integer null,
     created_at timestamp with time zone null default now(),
     updated_at timestamp with time zone null,
+    testdate timestamp with time zone null,
+    active integer null default 1,
     constraint masterrequests_pkey primary key (id)
   ) tablespace pg_default;
+
+create trigger handle_updated_at before
+update on masterrequests for each row
+execute function moddatetime ('updated_at');
 
 
   create table
