@@ -290,7 +290,7 @@ const CrudComponent = () => {
     { field: "requestedby", headerName: "Requested", width: 100 },
     { field: "reportidsuffix", headerName: "Chain", width: 80 },
     { field: "status", headerName: "Status", width: 75 },
-    { field: "description", headerName: "Internal Note", width: 400 },
+    { field: "description", headerName: "Internal Note", width: 350 },
     {
       field: "created_at",
       headerName: "Created",
@@ -329,6 +329,7 @@ const CrudComponent = () => {
 
     { field: "respondby", headerName: "Deadline", width: 100 },
     { field: "resolveddate", headerName: "Resolved", width: 150 },
+    { field: "duration", headerName: "Duration", width: 100 },
 
     {
       field: "requestworksheetrownumber",
