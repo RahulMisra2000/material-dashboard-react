@@ -54,7 +54,7 @@ function Dashboard() {
 
   const { user, loading, error } = useUser();
   const [resolvedDuration, setResolvedDuration] = useState(null);
-  let content, content2, content3;
+  let content /* All cases */, content2, content3;
 
   useEffect(() => {
     console.log("%cCOMPONENT LOADED!!!!!", "color: blue; background-color: red; padding: 5px;");
@@ -91,8 +91,8 @@ function Dashboard() {
     content = (
       <ReportsBarChart
         color="info"
-        title="time on provider"
-        description="Resolved Work Items"
+        title="time spent with provider"
+        description="All Workload/Cases"
         date="campaign sent 2 days ago"
         chart={resolvedDuration}
       />
