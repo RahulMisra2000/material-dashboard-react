@@ -196,6 +196,18 @@ END
 ;$function$
 
 
+CREATE OR REPLACE FUNCTION get_total_duration_by_providercode()
+RETURNS TABLE (providercode TEXT, total_duration NUMERIC)
+LANGUAGE sql
+AS $$
+    SELECT 
+        providercode, 
+        SUM(duration) AS total_duration
+    FROM 
+        masterrequests
+    GROUP BY 
+        providercode;
+$$;
 
 
 

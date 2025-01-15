@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 // @mui material components
@@ -34,6 +35,8 @@ import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
+import { supabase } from "../../backendAsService/supabase-config";
+
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
@@ -44,10 +47,83 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 import SignIn from "layouts/authentication/sign-in";
 
+const tableName = `masterrequests`;
+
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
 
   const { user, loading, error } = useUser();
+  const [resolvedDuration, setResolvedDuration] = useState(null);
+  let content, content2, content3;
+
+  useEffect(() => {
+    console.log("%cCOMPONENT LOADED!!!!!", "color: blue; background-color: red; padding: 5px;");
+    fetchRecords();
+  }, []);
+
+  const fetchRecords = async () => {
+    try {
+      console.log("%cFETCHING RECORDS!", "color: blue; background-color: red; padding: 5px;");
+      const { data, error } = await supabase.rpc("get_total_duration_by_providercode");
+
+      if (error) {
+        throw new Error(error || "Unknown error");
+      } else {
+        // Convert the returned data into the desired format for the graph
+        const formattedData = {
+          labels: data.map((item) => item.providercode), // Extract all providercode values
+          datasets: {
+            label: "Duration", // Define the label for the dataset
+            data: data.map((item) => item.total_duration), // Extract all total_duration values
+          },
+        };
+        setTimeout(() => {
+          setResolvedDuration(formattedData);
+        }, 5000);
+      }
+    } catch (e) {
+      console.error(e?.message || e); // show both error messages in console
+      setResolvedDuration(null);
+    }
+  };
+
+  if (resolvedDuration) {
+    content = (
+      <ReportsBarChart
+        color="info"
+        title="time on provider"
+        description="Resolved Work Items"
+        date="campaign sent 2 days ago"
+        chart={resolvedDuration}
+      />
+    );
+    content2 = (
+      <ReportsLineChart
+        color="success"
+        title="daily sales"
+        description={
+          <>
+            (<strong>+15%</strong>) increase in today sales.
+          </>
+        }
+        date="updated 4 min ago"
+        chart={sales}
+      />
+    );
+    content3 = (
+      <ReportsLineChart
+        color="dark"
+        title="completed tasks"
+        description="Last Campaign Performance"
+        date="just updated"
+        chart={tasks}
+      />
+    );
+  } else {
+    content = <CircularProgress color="primary" size={60} />;
+    content2 = <CircularProgress color="primary" size={60} />;
+    content3 = <CircularProgress color="primary" size={60} />;
+  }
 
   // If the data is still loading, you might want to show a loading spinner or message
   if (loading) {
@@ -167,42 +243,33 @@ function Dashboard() {
           </Grid>
         </Grid>
         <MDBox mt={4.5}>
-          <Grid container spacing={3}>
+          <Grid
+            container
+            spacing={3}
+            sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
             <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
-                />
+              <MDBox
+                mb={3}
+                sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+              >
+                {content}
               </MDBox>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
+              <MDBox
+                mb={3}
+                sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+              >
+                {content2}{" "}
               </MDBox>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
-                />
+              <MDBox
+                mb={3}
+                sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+              >
+                {content3}
               </MDBox>
             </Grid>
           </Grid>
