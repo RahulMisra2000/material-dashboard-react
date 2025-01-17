@@ -82,7 +82,8 @@ create table
     sourcefilename text null,
     errormessage text null,
     created_at timestamp with time zone null default now(),
-    active integer null default 1
+    active integer null default 1,
+    constraint primarykeyconstraint primary key (id)
   ) tablespace pg_default;
 
 -- Enable Row Level Security (RLS)

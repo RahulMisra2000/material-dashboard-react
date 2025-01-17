@@ -9,47 +9,32 @@ export function NotificationsProvider({ children }) {
     errors: {
       active: false,
       count: 0,
+      records: [],
     },
-    // Add more notification types here as needed
-    // messages: {
-    //   active: false,
-    //   count: 0
-    // },
-    // alerts: {
-    //   active: false,
-    //   count: 0
-    // }
   });
 
   const checkNotifications = async () => {
     try {
-      // Check for active errors
+      // Get all error records with full details
       const { data: errorData, error: errorQueryError } = await supabase
         .from("requesterrors")
-        .select("id")
-        .eq("active", 1);
+        .select("*")
+        .eq("active", 1)
+        .eq("type", "ERROR")
+        .order("created_at", { ascending: false });
 
       if (errorQueryError) {
         throw errorQueryError;
       }
 
-      // Add more notification checks here as needed
-      // const { data: messageData, error: messageQueryError } = await supabase
-      //   .from("messages")
-      //   .select("id")
-      //   .eq("read", false);
-
+      // Update state with both count and records
       setNotifications((prev) => ({
         ...prev,
         errors: {
           active: errorData && errorData.length > 0,
           count: errorData?.length || 0,
+          records: errorData || [],
         },
-        // Add more notification updates here
-        // messages: {
-        //   active: messageData && messageData.length > 0,
-        //   count: messageData?.length || 0
-        // }
       }));
     } catch (error) {
       console.error("Error checking notifications:", error);
@@ -107,6 +92,10 @@ export function NotificationsProvider({ children }) {
     return notifications[type]?.active || false;
   };
 
+  const getNotificationRecords = (type) => {
+    return notifications[type]?.records || [];
+  };
+
   return (
     <NotificationsContext.Provider
       value={{
@@ -114,6 +103,7 @@ export function NotificationsProvider({ children }) {
         hasAnyNotifications,
         getNotificationCount,
         isNotificationActive,
+        getNotificationRecords,
         checkNotifications,
       }}
     >

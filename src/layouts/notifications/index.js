@@ -13,8 +13,10 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { supabase } from "../../backendAsService/supabase-config";
+import { useNotifications } from "../../context/NotificationsContext";
+import PropTypes from "prop-types";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -31,49 +33,99 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 function Notifications() {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+  const { getNotificationRecords } = useNotifications();
+  const errorRecords = getNotificationRecords("errors");
 
   useEffect(() => {
-    fetchData();
+    setLoading(false);
   }, []);
 
-  const fetchData = async () => {
-    try {
-      console.log("Starting fetch...");
-      const { data: records, error } = await supabase
-        .from("requesterrors")
-        .select("*")
-        .order("created_at", { ascending: false });
+  const DefaultCell = ({ value }) => <MDTypography variant="caption">{value}</MDTypography>;
 
-      if (error) {
-        throw error;
-      }
+  const MessageCell = ({ value }) => (
+    <MDTypography variant="caption">
+      {value.length > 50 ? `${value.substring(0, 50)}...` : value}
+    </MDTypography>
+  );
 
-      setData(records || []);
-    } catch (error) {
-      console.error("Error details:", {
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-      });
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
+  DefaultCell.propTypes = {
+    value: PropTypes.any.isRequired,
+  };
+
+  MessageCell.propTypes = {
+    value: PropTypes.string.isRequired,
   };
 
   const columns = [
-    { Header: "Region", accessor: "region", width: "10%" },
-    { Header: "Type", accessor: "type", width: "10%" },
-    { Header: "Case", accessor: "casenumber", width: "10%" },
-    { Header: "File", accessor: "sourcefilename", width: "20%" },
-    { Header: "Message", accessor: "errormessage", width: "45%" },
-    { Header: "Active", accessor: "active", width: "5%" },
     {
-      Header: "Timestamp",
+      Header: () => (
+        <MDTypography variant="h6" fontWeight="bold">
+          Region
+        </MDTypography>
+      ),
+      accessor: "region",
+      width: "10%",
+      Cell: DefaultCell,
+    },
+    {
+      Header: () => (
+        <MDTypography variant="h6" fontWeight="bold">
+          Type
+        </MDTypography>
+      ),
+      accessor: "type",
+      width: "10%",
+      Cell: DefaultCell,
+    },
+    {
+      Header: () => (
+        <MDTypography variant="h6" fontWeight="bold">
+          Case
+        </MDTypography>
+      ),
+      accessor: "casenumber",
+      width: "10%",
+      Cell: DefaultCell,
+    },
+    {
+      Header: () => (
+        <MDTypography variant="h6" fontWeight="bold">
+          File
+        </MDTypography>
+      ),
+      accessor: "sourcefilename",
+      width: "10%",
+      Cell: DefaultCell,
+    },
+    {
+      Header: () => (
+        <MDTypography variant="h6" fontWeight="bold">
+          Message
+        </MDTypography>
+      ),
+      accessor: "errormessage",
+      width: "55%",
+      Cell: MessageCell,
+    },
+    {
+      Header: () => (
+        <MDTypography variant="h6" fontWeight="bold">
+          Active
+        </MDTypography>
+      ),
+      accessor: "active",
+      width: "5%",
+      Cell: DefaultCell,
+    },
+    {
+      Header: () => (
+        <MDTypography variant="h6" fontWeight="bold">
+          Timestamp
+        </MDTypography>
+      ),
       accessor: "created_at",
       width: "15%",
-      Cell: ({ value }) => new Date(value).toLocaleString(),
+      Cell: DefaultCell,
     },
   ];
 
@@ -106,7 +158,7 @@ function Notifications() {
                 ) : (
                   <MDBox p={3}>
                     <DataTable
-                      table={{ columns, rows: data }}
+                      table={{ columns, rows: errorRecords }}
                       isSorted={true}
                       entriesPerPage={true}
                       showTotalEntries={true}
