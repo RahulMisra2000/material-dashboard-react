@@ -73,6 +73,20 @@ create table
     constraint masterrequests_pkey primary key (id)
   ) tablespace pg_default;
 
+CREATE TABLE requesterrors (
+    id uuid not null default extensions.uuid_generate_v4 (),
+    region text DEFAULT NULL,
+    type text DEFAULT NULL,
+    casenumber text DEFAULT NULL,
+    sourcefileName text DEFAULT NULL,
+    errormessage text DEFAULT NULL,
+    created_at timestamp with time zone DEFAULT now()  -- Column to store the creation date
+) tablespace pg_default;
+
+-- Enable Row Level Security (RLS)
+ALTER TABLE requesterrors ENABLE ROW LEVEL SECURITY;
+
+
 create trigger handle_updated_at before
 update on masterrequests for each row
 execute function moddatetime ('updated_at');
