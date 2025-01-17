@@ -24,6 +24,7 @@ import { MaterialUIControllerProvider } from "context";
 // *** MY PROVIDERS ***
 import { UserProvider } from "./context/UserContext";
 // import { FirestoreProvider } from "./context/FirestoreContext";
+import { NotificationsProvider } from "context/NotificationsContext";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
@@ -31,9 +32,11 @@ const root = createRoot(container);
 root.render(
   <BrowserRouter>
     <UserProvider>
-      <MaterialUIControllerProvider>
-        <App />
-      </MaterialUIControllerProvider>
+      <NotificationsProvider>
+        <MaterialUIControllerProvider>
+          <App />
+        </MaterialUIControllerProvider>
+      </NotificationsProvider>
     </UserProvider>
   </BrowserRouter>
 );

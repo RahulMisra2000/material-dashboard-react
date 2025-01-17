@@ -73,15 +73,17 @@ create table
     constraint masterrequests_pkey primary key (id)
   ) tablespace pg_default;
 
-CREATE TABLE requesterrors (
+create table
+  public.requesterrors (
     id uuid not null default extensions.uuid_generate_v4 (),
-    region text DEFAULT NULL,
-    type text DEFAULT NULL,
-    casenumber text DEFAULT NULL,
-    sourcefileName text DEFAULT NULL,
-    errormessage text DEFAULT NULL,
-    created_at timestamp with time zone DEFAULT now()  -- Column to store the creation date
-) tablespace pg_default;
+    region text null,
+    type text null,
+    casenumber text null,
+    sourcefilename text null,
+    errormessage text null,
+    created_at timestamp with time zone null default now(),
+    active integer null default 1
+  ) tablespace pg_default;
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE requesterrors ENABLE ROW LEVEL SECURITY;

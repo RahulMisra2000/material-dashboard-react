@@ -64,10 +64,11 @@ function Notifications() {
 
   const columns = [
     { Header: "Region", accessor: "region", width: "10%" },
-    { Header: "Error Message", accessor: "errormessage", width: "30%" },
-    { Header: "Request URL", accessor: "request_url", width: "25%" },
-    { Header: "Method", accessor: "method", width: "10%" },
-    { Header: "Status", accessor: "status_code", width: "10%" },
+    { Header: "Type", accessor: "type", width: "10%" },
+    { Header: "Case", accessor: "casenumber", width: "10%" },
+    { Header: "File", accessor: "sourcefilename", width: "20%" },
+    { Header: "Message", accessor: "errormessage", width: "45%" },
+    { Header: "Active", accessor: "active", width: "5%" },
     {
       Header: "Timestamp",
       accessor: "created_at",

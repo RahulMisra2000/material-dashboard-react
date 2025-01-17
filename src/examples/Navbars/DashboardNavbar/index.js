@@ -53,12 +53,17 @@ import {
   setOpenConfigurator,
 } from "context";
 
+import { useNotifications } from "context/NotificationsContext";
+
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
+  const { isNotificationActive, getNotificationCount } = useNotifications();
+  const hasErrors = isNotificationActive("errors");
+  const errorCount = getNotificationCount("errors");
 
   useEffect(() => {
     // Setting the navbar type
@@ -167,7 +172,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
               <IconButton
                 size="small"
                 disableRipple
-                color="inherit"
+                color={hasErrors ? "error" : "inherit"}
                 sx={navbarIconButton}
                 aria-controls="notification-menu"
                 aria-haspopup="true"
@@ -175,6 +180,25 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 onClick={handleOpenMenu}
               >
                 <Icon sx={iconsStyle}>notifications</Icon>
+                {errorCount > 0 && (
+                  <MDBox
+                    component="span"
+                    position="absolute"
+                    top={0}
+                    right={0}
+                    bgColor="error"
+                    borderRadius="50%"
+                    width={16}
+                    height={16}
+                    fontSize={12}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    color="white"
+                  >
+                    {errorCount}
+                  </MDBox>
+                )}
               </IconButton>
               {renderMenu()}
             </MDBox>
