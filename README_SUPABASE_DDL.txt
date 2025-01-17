@@ -261,7 +261,11 @@ ON public.users
 FOR SELECT
 USING (id = auth.uid());
 
-
+CREATE POLICY "Allow authenticated users to select from requesterrors" 
+ON requesterrors 
+FOR SELECT 
+TO authenticated 
+USING (true);
 
 
 
