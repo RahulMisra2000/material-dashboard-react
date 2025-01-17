@@ -19,23 +19,17 @@ import { supabase } from "../../backendAsService/supabase-config";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 function Notifications() {
-  const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
@@ -46,15 +40,6 @@ function Notifications() {
   const fetchData = async () => {
     try {
       console.log("Starting fetch...");
-
-      // First, let's verify the connection
-      const { data: testData, error: testError } = await supabase
-        .from("requesterrors")
-        .select("count");
-
-      console.log("Count check:", testData);
-
-      // Then do the actual fetch
       const { data: records, error } = await supabase
         .from("requesterrors")
         .select("*")
@@ -63,10 +48,6 @@ function Notifications() {
       if (error) {
         throw error;
       }
-
-      console.log("Fetched records:", records);
-      console.log("Records length:", records ? records.length : 0);
-      console.log("First record:", records?.[0]);
 
       setData(records || []);
     } catch (error) {
@@ -80,6 +61,20 @@ function Notifications() {
       setLoading(false);
     }
   };
+
+  const columns = [
+    { Header: "Region", accessor: "region", width: "10%" },
+    { Header: "Error Message", accessor: "errormessage", width: "30%" },
+    { Header: "Request URL", accessor: "request_url", width: "25%" },
+    { Header: "Method", accessor: "method", width: "10%" },
+    { Header: "Status", accessor: "status_code", width: "10%" },
+    {
+      Header: "Timestamp",
+      accessor: "created_at",
+      width: "15%",
+      Cell: ({ value }) => new Date(value).toLocaleString(),
+    },
+  ];
 
   return (
     <DashboardLayout>
@@ -108,32 +103,16 @@ function Notifications() {
                     Loading...
                   </MDTypography>
                 ) : (
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Region</TableCell>
-                          <TableCell>Error Message</TableCell>
-                          <TableCell>Request URL</TableCell>
-                          <TableCell>Method</TableCell>
-                          <TableCell>Status Code</TableCell>
-                          <TableCell>Timestamp</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {data.map((record) => (
-                          <TableRow key={record.id}>
-                            <TableCell>{record.region}</TableCell>
-                            <TableCell>{record.errormessage}</TableCell>
-                            <TableCell>{record.request_url}</TableCell>
-                            <TableCell>{record.method}</TableCell>
-                            <TableCell>{record.status_code}</TableCell>
-                            <TableCell>{new Date(record.created_at).toLocaleString()}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                  <MDBox p={3}>
+                    <DataTable
+                      table={{ columns, rows: data }}
+                      isSorted={true}
+                      entriesPerPage={true}
+                      showTotalEntries={true}
+                      noEndBorder
+                      canSearch
+                    />
+                  </MDBox>
                 )}
               </MDBox>
             </Card>
