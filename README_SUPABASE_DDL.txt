@@ -228,6 +228,24 @@ $$;
 
 
 
+create or replace function get_duration_totals(provider_code text)
+returns json
+language plpgsql
+as $$
+declare
+  result json;
+begin
+  select json_build_object(
+    'open_duration', coalesce(sum(duration) filter (where resolveddate is null), 0),
+    'closed_duration', coalesce(sum(duration) filter (where resolveddate is not null), 0)
+  )
+  into result
+  from masterrequests
+  where providercode = provider_code;
+  
+  return result;
+end;
+$$;
 
 
 
